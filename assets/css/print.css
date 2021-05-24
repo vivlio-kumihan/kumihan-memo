@@ -1,0 +1,150 @@
+/* start 210517 */
+
+@page {
+    size: 182mm 257mm;
+    bleed: 3mm;
+    margin-top: 30mm;
+    margin-bottom: 23mm;
+    @bottom-center {
+        margin-top: 6mm;
+        padding-bottom: 12mm;
+        content: "— " counter(page) " —";
+        font-size: 3.25mm;
+        font-family: YuMin_36pKn-Medium;
+    }
+}
+
+@page :left {
+    margin-right: 14mm;
+    margin-left: 28mm;    
+    @top-left-corner {
+        margin: -3mm -167mm 12mm -3mm;
+        padding: 13mm 0mm 0mm 24.5mm;
+        content: string(Chapter);
+        font-size: 3.25mm;
+        font-family: YuMin_36pKn-Medium;
+        text-align: left;
+        color: rgba(255, 255, 255, 1);
+        background-color: teal;
+        border-bottom: 0.6mm solid tomato;
+    }    
+}
+
+@page :right {
+    margin-right:  28mm;
+    margin-left:  14mm;  
+    @top-right-corner {
+        margin: -3mm -3mm 12mm -167mm;
+        padding: 13mm 24.5mm 0mm 0mm;
+        content: string(Section);
+        font-size: 3.25mm;
+        font-family: YuMin_36pKn-Medium;
+        text-align: right;
+        color: rgba(255, 255, 255, 1);
+        background-color: teal;
+        border-bottom: 0.6mm solid tomato;
+    }
+}
+
+/* @page toc {
+    @bottom-left {
+      content: none;
+    }
+    @bottom-right {
+      content: none;
+    }
+}
+
+.toc {
+    page: toc;
+} */
+
+h1 ::before {
+    counter-increment: PartNo;
+    content: "第" counter(PartNo) "部" "\0020";
+}
+
+h1 {
+    page-break-after: right;
+    string-set: Part content(before) content();
+    content: string(Part, start);
+    counter-reset: ChapterNo;
+}
+
+.ending {
+    page-break-after: always;
+}
+
+h2 ::before {
+    counter-increment: ChapterNo;
+    content: "第" counter(ChapterNo) "章" "\0020";
+}
+
+h2 {
+    string-set: Chapter content(before) content();
+    counter-reset: SectionNo;
+}
+
+
+h3 ::before {
+    counter-increment: SectionNo;
+    content: "第" counter(SectionNo) "節" "\0020" open-quote;
+}
+
+h3 ::after {
+    content: "』";
+}
+
+h3 {
+    string-set: Section content(before) content() content(after);
+    quotes: "『" "』"; 
+    counter-reset: SubsectionNo;
+}
+
+h4 ::before {
+    counter-increment: SubsectionNo;
+    content: attr(prefix) "\0020" open-quote;
+}
+
+h4 ::after {
+    content: close-quote;
+}
+
+h4 {
+    string-set: Subsection content(before) content();
+    counter-reset: SubsubsectionNo;
+    quotes: "「" "」"; 
+}
+
+h5 ::before {
+    counter-increment: SubsubsectionNo;
+    content: attr(prefix) "\0020" open-quote;
+}
+
+h5 ::after {
+    content: close-quote;
+}
+
+h5 {
+    string-set: Subsubsection content(before) content();
+    quotes: "【" "】"; 
+}
+
+
+
+body {
+    /* h1の番号を順に増やしていく場合に、ここでリセットしないと増えない。 */
+    counter-reset: PartNo;
+    margin: 0mm 0mm;
+    padding: 0mm 0mm;
+    color:black;
+    background-color:rgba(0, 0, 0, 0.1);
+}
+
+p {
+    margin: 0em;
+    font-family: YuMin_36pKn-Medium;
+    font-size: 3.5mm;
+    line-height: 6mm;
+    text-align:justify;
+}
