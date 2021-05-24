@@ -1,7 +1,7 @@
 /* start 210517 */
 
 @page {
-    size: 182mm 257mm;
+    size: 128mm 182mm;
     bleed: 3mm;
     margin-top: 30mm;
     margin-bottom: 23mm;
@@ -14,7 +14,29 @@
     }
 }
 
-@page :left {
+body {
+    /* h1の番号を順に増やしていく場合に、ここでリセットしないと増えない。 */
+    /* counter-reset: PartNo; */
+    margin: 0mm 0mm;
+    padding: 0mm 0mm;
+    color:black;
+    background-color:rgba(0, 0, 0, 0.1);
+}
+
+p {
+    margin: 0em;
+    font-family: YuMin_36pKn-Medium;
+    font-size: 3mm;
+    line-height: 5mm;
+    text-align:justify;
+}
+
+img {
+    display: block;
+    margin: 0 auto;
+}
+
+/* @page :left {
     margin-right: 14mm;
     margin-left: 28mm;    
     @top-left-corner {
@@ -44,7 +66,7 @@
         background-color: teal;
         border-bottom: 0.6mm solid tomato;
     }
-}
+} */
 
 /* @page toc {
     @bottom-left {
@@ -59,7 +81,7 @@
     page: toc;
 } */
 
-h1 ::before {
+/* h1 ::before {
     counter-increment: PartNo;
     content: "第" counter(PartNo) "部" "\0020";
 }
@@ -128,23 +150,7 @@ h5 ::after {
 h5 {
     string-set: Subsubsection content(before) content();
     quotes: "【" "】"; 
-}
+} */
 
 
 
-body {
-    /* h1の番号を順に増やしていく場合に、ここでリセットしないと増えない。 */
-    counter-reset: PartNo;
-    margin: 0mm 0mm;
-    padding: 0mm 0mm;
-    color:black;
-    background-color:rgba(0, 0, 0, 0.1);
-}
-
-p {
-    margin: 0em;
-    font-family: YuMin_36pKn-Medium;
-    font-size: 3.5mm;
-    line-height: 6mm;
-    text-align:justify;
-}
