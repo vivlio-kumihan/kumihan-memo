@@ -63,27 +63,54 @@ p {
     text-indent: -1em;
 }
 
+ol {
+    /* list-style-type: disc; */
+    /* list-style-type: circle; */
+    /* list-style-type: square; */
 
+    /* "1. 2. 3. ...." */
+    /* list-style-type: decimal; */
+    
+    /* "01. 02. 03. ...." */
+    /* list-style-type: decimal-leading-zero; */
+
+    /* "Ⅰ. Ⅱ. Ⅲ. ..." */
+    /* list-style-type: upper-roman; */
+
+    /* "ⅰ. ⅱ. ⅲ. ..." */
+    /* list-style-type: lower-roman; */
+    
+    /* "a. b. c. ..." */
+    /* list-style-type: lower-latin; */
+    
+    /* "A. B. D. ..." */
+    /* list-style-type: upper-latin; */
+
+    /* "一. 二. 三. ..." */
+    /* list-style-type: trad-chinese-informal; */
+    /* list-style-type: cjk-ideographic; */
+
+}    
+
+/* 
 ol {
     margin: 0.25em 0;
-    counter-reset:number; /*数字をリセット*/
-    list-style-type: none!important; /*数字を一旦消す*/
+    counter-reset:number;
+    list-style-type: none!important;
     padding:0.5em;
     background: #f5faff;
-  }
-  ol li {
+}
+ol li {
     position: relative;
     padding: 0.5em 0.5em 0.5em 2.5em;
     font-size: 2.5mm;
     line-height: 1.3em;
-  }
-  
-  ol li:before{
-    /* 以下数字をつける */
+}
+
+ol li:before{
     position: absolute;
     counter-increment: number;
     content: counter(number);
-    /*以下数字のデザイン変える*/
     display: inline-block;
     background: #5c9ee7;
     color: white;
@@ -92,18 +119,14 @@ ol {
     font-size: 4mm;
     border-radius: 50%;
     left: 0;
-    /* 数字がセンターセンターに来ないのでパディングを入れた */
-    /* 円の調整が微妙。パディングいれると縁が縦にひしゃげた。 */
-    /* 横幅をパディング分増やして正円にしている。 */
     padding-top: 1mm;
     width: 4.5mm;
     height: 3.5mm;
     text-align: center;
-    /*以下 上下中央寄せのため*/
     top: 50%;
     -webkit-transform: translateY(-50%);
     transform: translateY(-50%);
-  }
+} */
 
 
 img {
@@ -129,8 +152,8 @@ figcaption {
     padding: .5em;
     text-align: center;
     border: solid 1px silver;
-  }
-  
+}
+
 figcaption {
 margin-top: .5em;
 font-size: .9em;
@@ -170,12 +193,8 @@ font-size: .9em;
 } */
 
 /* @page toc {
-    @bottom-left {
-      content: none;
-    }
-    @bottom-right {
-      content: none;
-    }
+    @bottom-left { content: none; }
+    @bottom-right { content: none; }
 }
 
 .toc {
@@ -252,6 +271,3 @@ h5 {
     string-set: Subsubsection content(before) content();
     quotes: "【" "】"; 
 } */
-
-
-
