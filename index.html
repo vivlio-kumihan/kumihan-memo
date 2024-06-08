@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://unpkg.com/destyle.css@4.0.0/destyle.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="./styles/style.css">
+  <script src="./scripts/main.js" defer></script>
+</head>
+
+<body>
+  <main class="main-container">
+  
+    <section class="section">
+      <h2 class="text-center">Products</h2>
+      <div class="products">
+        <div class="product">
+          <img class="product__image" src="./images/products/beer.svg" alt="Beer">
+          <h2 class="product__name">Beer</h2>
+          <h3 class="product__price">6.00</h3>
+          <button class="btn btn__primary" data-action="ADD_TO_CART">Add To Cart</button>
+        </div>
+        <div class="product">
+          <img class="product__image" src="images/products/energy-drink.svg" alt="Energy Drink">
+          <h2 class="product__name">Energy Drink</h2>
+          <h3 class="product__price">5.00</h3>
+          <button class="btn btn__primary" data-action="ADD_TO_CART">Add To Cart</button>
+        </div>
+        <div class="product">
+          <img class="product__image" src="images/products/juice.svg" alt="Juice">
+          <h2 class="product__name">Juice</h2>
+          <h3 class="product__price">4.00</h3>
+          <button class="btn btn__primary" data-action="ADD_TO_CART">Add To Cart</button>
+        </div>
+        <div class="product">
+          <img class="product__image" src="images/products/milk.svg" alt="Milk">
+          <h2 class="product__name">Milk</h2>
+          <h3 class="product__price">2.50</h3>
+          <button class="btn btn__primary" data-action="ADD_TO_CART">Add To Cart</button>
+        </div>
+        <div class="product">
+          <img class="product__image" src="images/products/mineral-water.svg" alt="Mineral Water">
+          <h2 class="product__name">Mineral Water</h2>
+          <h3 class="product__price">1.00</h3>
+          <button class="btn btn__primary" data-action="ADD_TO_CART">Add To Cart</button>
+        </div>
+        <div class="product">
+          <img class="product__image" src="images/products/smoothie.svg" alt="Smoothie">
+          <h2 class="product__name">Smoothie</h2>
+          <h3 class="product__price">6.00</h3>
+          <button class="btn btn__primary" data-action="ADD_TO_CART">Add To Cart</button>
+        </div>
+      </div>
+    </section>
+  
+    <section class="section">
+      <h2 class="text-center">Cart</h2>
+      <div class="cart"></div>
+    </section>
+  
+  </main>
+</body>
+
+</html>
