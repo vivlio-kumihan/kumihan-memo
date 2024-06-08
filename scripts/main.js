@@ -21,7 +21,7 @@ addToCartBtns.forEach((addToCartBtnEl) => {
           <img class="cart__item-image" src="${ product.image }" alt="${ product.name }"></img>
           <h3 class="cart__item-name">${ product.name }</h3>
           <h3 class="cart__imte-price">${ product.price }</h3>
-          <button class="btn btn__primary btn__small" data-action="DECRESE_ITEM">&minus;</button>
+          <button class="btn btn__primary btn__small btn__danger" data-action="DECRESE_ITEM">&minus;</button>
           <h3 class="cart__item-quantity">${ product.quantity }</h3>
           <button class="btn btn__primary btn__small" data-action="INCREASE_ITEM">&plus;</button>
           <button class="btn btn__danger btn__small" data-action="REMOVE_ITEM">&times;</button>
@@ -30,17 +30,52 @@ addToCartBtns.forEach((addToCartBtnEl) => {
   
       cart.push(product);
       addToCartBtnEl.textContent = "In Cart";
+      addToCartBtnEl.disabled = true;
 
       const cartItems = cartDOM.querySelectorAll(".cart__item");
       cartItems.forEach(cartItemDOM => {
         if (cartItemDOM.querySelector(".cart__item-name").textContent === product.name) {
+
           const pluseBtn = cartItemDOM.querySelector('[data-action="INCREASE_ITEM"]');
           pluseBtn.addEventListener("click", () => {
             cart.forEach(cartItem => {
               if (cartItem.name === product.name) {
-                cartItem.quantity++;
-                cartItemDOM.querySelector(".cart__item-quantity").textContent = cartItem.quantity;
+                cartItemDOM.querySelector(".cart__item-quantity").textContent = ++cartItem.quantity;
+                cartItemDOM.querySelector('[data-action="DECRESE_ITEM"]').classList.remove("btn__danger");
               }
+            });
+          });
+
+          const minusBtn = cartItemDOM.querySelector('[data-action="DECRESE_ITEM"]');
+          minusBtn.addEventListener("click", () => {
+            cart.forEach(cartItem => {
+              if (cartItem.name === product.name) {
+                if (cartItem.quantity > 1) {
+                  cartItemDOM.querySelector(".cart__item-quantity").textContent = --cartItem.quantity
+                } else {
+                  cartItemDOM.classList.add("cart__item-removed");
+                  setTimeout(() => cartItemDOM.remove(), 300);
+                  cart = cart.filter(cartItem => cartItem.name !== product.name);
+                  addToCartBtnEl.textContent = "Add To Cart";
+                  addToCartBtnEl.disabled = false;
+                }
+                if (cartItem.quantity === 1) {
+                  cartItemDOM.querySelector('[data-action="DECRESE_ITEM"]').classList.add("btn__danger");
+                }
+              }
+            });
+          });
+
+          const removeBtn = cartItemDOM.querySelector('[data-action="REMOVE_ITEM"]');
+          removeBtn.addEventListener("click", () => {
+            cart.forEach(cartItem => {
+              if (cartItem.name === product.name) {
+                cartItemDOM.classList.add("cart__item-removed");
+                setTimeout(() => cartItemDOM.remove(), 300);
+                cart = cart.filter(cartItem => cartItem.name !== product.name);
+                addToCartBtnEl.textContent = "Add To Cart";
+                addToCartBtnEl.disabled = false;
+              } 
             });
           });
         }
@@ -48,3 +83,15 @@ addToCartBtns.forEach((addToCartBtnEl) => {
     }
   });
 });
+
+
+
+// cartItem.quantity > 1
+//   ? cartItemDOM.querySelector(".cart__item-quantity").textContent = --cartItem.quantity
+//   : () => {
+//       cartItemDOM.classList.add("cart__item-removed");
+//       setTimeout(() => cartItemDOM.remove(), 300);
+//       cart = cart.filter(cartItem => cartItem.name !== product.name);
+//       addToCartBtnEl.textContent = "Add To Cart";
+//       addToCartBtnEl.disabled = false;
+//   }
