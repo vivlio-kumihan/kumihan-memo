@@ -1,6 +1,7 @@
 "use strict";
 
 let cart = [];
+// let cart = JSON.parse(localStorage.getItem("localStrageCart")) || [];
 const cartDOM = document.querySelector(".cart");
 const addToCartBtns = document.querySelectorAll('[data-action="ADD_TO_CART"]');
 
@@ -29,6 +30,8 @@ addToCartBtns.forEach((addToCartBtnEl) => {
         `);
   
       cart.push(product);
+      localStorage.setItem("localStrageCart", JSON.stringify(cart));
+
       addToCartBtnEl.textContent = "In Cart";
       addToCartBtnEl.disabled = true;
 
@@ -42,6 +45,7 @@ addToCartBtns.forEach((addToCartBtnEl) => {
               if (cartItem.name === product.name) {
                 cartItemDOM.querySelector(".cart__item-quantity").textContent = ++cartItem.quantity;
                 cartItemDOM.querySelector('[data-action="DECRESE_ITEM"]').classList.remove("btn__danger");
+                localStorage.setItem("localStrageCart", JSON.stringify(cart));
               }
             });
           });
@@ -51,11 +55,13 @@ addToCartBtns.forEach((addToCartBtnEl) => {
             cart.forEach(cartItem => {
               if (cartItem.name === product.name) {
                 if (cartItem.quantity > 1) {
-                  cartItemDOM.querySelector(".cart__item-quantity").textContent = --cartItem.quantity
+                  cartItemDOM.querySelector(".cart__item-quantity").textContent = --cartItem.quantity;
+                  localStorage.setItem("localStrageCart", JSON.stringify(cart));
                 } else {
                   cartItemDOM.classList.add("cart__item-removed");
                   setTimeout(() => cartItemDOM.remove(), 300);
                   cart = cart.filter(cartItem => cartItem.name !== product.name);
+                  localStorage.setItem("localStrageCart", JSON.stringify(cart));
                   addToCartBtnEl.textContent = "Add To Cart";
                   addToCartBtnEl.disabled = false;
                 }
@@ -73,6 +79,7 @@ addToCartBtns.forEach((addToCartBtnEl) => {
                 cartItemDOM.classList.add("cart__item-removed");
                 setTimeout(() => cartItemDOM.remove(), 300);
                 cart = cart.filter(cartItem => cartItem.name !== product.name);
+                localStorage.setItem("localStrageCart", JSON.stringify(cart));
                 addToCartBtnEl.textContent = "Add To Cart";
                 addToCartBtnEl.disabled = false;
               } 
