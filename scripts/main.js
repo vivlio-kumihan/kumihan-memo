@@ -100,6 +100,58 @@ const cartDOM = document.querySelector(".cart");
 // カートに追加するボタンのDOM生成。
 const addToCartBtns = document.querySelectorAll('[data-action="ADD_TO_CART"]');
 
+// 注文数の取り扱いについての関数。
+const updateCartItemQuantityFn = (cartItemDOM, cartItem, increment) => {
+  cartItem.quantity += increment;
+  cartItemDOM.querySelector(".cart__item-quantity").textContent = cartItem.quantity;
+  (cartItem.quantity === 1)
+    ? cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]').classList.add("btn__danger")
+    : cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]').classList.remove("btn__danger");
+};
+
+// アイテムを削除で発火する事柄に関する関数。
+const removeItemFn = (cartItemDOM, productObj, addToCartBtnEl) => {
+  cartItemDOM.classList.add("cart__item-removed");
+  setTimeout(() => cartItemDOM.remove(), 300);
+  cart = cart.filter(cartItem => cartItem.name !== productObj.name);
+  addToCartBtnEl.textContent = "Add To Cart";
+  addToCartBtnEl.disabled = false;
+};
+
+const handleCartItem = (cartItemDOM, productObj, addToCartBtnEl) => {
+  // プラス、マイナス、削除ボタンのDOM生成。
+  const plusBtn = cartItemDOM.querySelector('[data-action="INCREASE_ITEM"]');
+  const minusBtn = cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]');
+  const removeBtn = cartItemDOM.querySelector('[data-action="REMOVE_ITEM"]');
+
+  // プラスボタンのイベント。
+  plusBtn.addEventListener("click", () => {
+    cart.forEach(cartItem => {
+      cartItem.name === productObj.name
+        && updateCartItemQuantityFn(cartItemDOM, cartItem, 1);
+    });
+  });
+
+  // マイナスボタンのイベント。
+  minusBtn.addEventListener("click", () => {
+    cart.forEach(cartItem => {
+      if (cartItem.name === productObj.name) {
+        cartItem.quantity > 1
+          ? updateCartItemQuantityFn(cartItemDOM, cartItem, -1)
+          : removeItemFn(cartItemDOM, productObj, addToCartBtnEl);
+      }
+    });
+  });
+
+  // 削除ボタンのイベント。
+  removeBtn.addEventListener("click", () => {
+    cart.forEach(cartItem => {
+      cartItem.name === productObj.name
+        && removeItemFn(cartItemDOM, productObj, addToCartBtnEl);
+    });
+  });
+};
+
 // 複数あるカート追加ボタンのインスタンスを待機。
 addToCartBtns.forEach((addToCartBtnEl) => {
   // 追加ボタンをクリックするイベントを通して購入（予定）商品のインスタンスを発生させる。
@@ -145,54 +197,124 @@ addToCartBtns.forEach((addToCartBtnEl) => {
   });
 });
 
-const handleCartItem = (cartItemDOM, productObj, addToCartBtnEl) => {
-  // プラス、マイナス、削除ボタンのDOM生成。
-  const plusBtn = cartItemDOM.querySelector('[data-action="INCREASE_ITEM"]');
-  const minusBtn = cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]');
-  const removeBtn = cartItemDOM.querySelector('[data-action="REMOVE_ITEM"]');
 
-  // プラスボタンのイベント。
-  plusBtn.addEventListener("click", () => {
-    cart.forEach(cartItem => {
-      cartItem.name === productObj.name
-        && updateCartItemQuantity(cartItem, 1);
-    });
-  });
 
-  // マイナスボタンのイベント。
-  minusBtn.addEventListener("click", () => {
-    cart.forEach(cartItem => {
-      if (cartItem.name === productObj.name) {
-        cartItem.quantity > 1
-          ? updateCartItemQuantity(cartItem, -1)
-          : removeItemFn();
-      }
-    });
-  });
 
-  // 削除ボタンのイベント。
-  removeBtn.addEventListener("click", () => {
-    cart.forEach(cartItem => {
-      cartItem.name === productObj.name
-        && removeItemFn();
-    });
-  });
+// "use strict";
 
-  // 注文数の取り扱いについての関数。
-  const updateCartItemQuantity = (cartItem, increment) => {
-    cartItem.quantity += increment;
-    cartItemDOM.querySelector(".cart__item-quantity").textContent = cartItem.quantity;
-    (cartItem.quantity === 1)
-      ? cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]').classList.add("btn__danger")
-      : cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]').classList.remove("btn__danger");
-  };
+// let cart = JSON.parse(localStorage.getItem("localStorageCart")) || [];
+// const cartDOM = document.querySelector(".cart");
+// const addToCartBtns = document.querySelectorAll('[data-action="ADD_TO_CART"]');
 
-  // アイテムを削除で発火する事柄に関する関数。
-  const removeItemFn = () => {
-    cartItemDOM.classList.add("cart__item-removed");
-    setTimeout(() => cartItemDOM.remove(), 300);
-    cart = cart.filter(cartItem => cartItem.name !== productObj.name);
-    addToCartBtnEl.textContent = "Add To Cart";
-    addToCartBtnEl.disabled = false;
-  };  
-};
+// const saveCartToLocalStorage = () => {
+//   localStorage.setItem("localStorageCart", JSON.stringify(cart));
+// };
+
+// const updateCartItemQuantityFn = (cartItemDOM, cartItem, increment) => {
+//   cartItem.quantity += increment;
+//   cartItemDOM.querySelector(".cart__item-quantity").textContent = cartItem.quantity;
+//   (cartItem.quantity === 1)
+//     ? cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]').classList.add("btn__danger")
+//     : cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]').classList.remove("btn__danger");
+//   saveCartToLocalStorage();
+// };
+
+// const handleCartItem = (cartItemDOM, productObj, addToCartBtnEl) => {
+//   const plusBtn = cartItemDOM.querySelector('[data-action="INCREASE_ITEM"]');
+//   const minusBtn = cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]');
+//   const removeBtn = cartItemDOM.querySelector('[data-action="REMOVE_ITEM"]');
+
+//   const removeItemFn = () => {
+//     cartItemDOM.classList.add("cart__item-removed");
+//     setTimeout(() => cartItemDOM.remove(), 300);
+//     cart = cart.filter(cartItem => cartItem.name !== productObj.name);
+//     addToCartBtnEl.textContent = "Add To Cart";
+//     addToCartBtnEl.disabled = false;
+//     saveCartToLocalStorage();
+//   };
+
+//   plusBtn.addEventListener("click", () => {
+//     cart.forEach(cartItem => {
+//       if (cartItem.name === productObj.name) {
+//         updateCartItemQuantityFn(cartItemDOM, cartItem, 1);
+//       }
+//     });
+//   });
+
+//   minusBtn.addEventListener("click", () => {
+//     cart.forEach(cartItem => {
+//       if (cartItem.name === productObj.name) {
+//         if (cartItem.quantity > 1) {
+//           updateCartItemQuantityFn(cartItemDOM, cartItem, -1);
+//         } else {
+//           removeItemFn();
+//         }
+//       }
+//     });
+//   });
+
+//   removeBtn.addEventListener("click", () => {
+//     cart.forEach(cartItem => {
+//       if (cartItem.name === productObj.name) {
+//         removeItemFn();
+//       }
+//     });
+//   });
+// };
+
+// const populateCartDOM = () => {
+//   cart.forEach(productObj => {
+//     cartDOM.insertAdjacentHTML("beforeend", `
+//       <div class="cart__item" data-name="${productObj.name}">
+//         <img class="cart__item-image" src="${productObj.image}" alt="${productObj.name}"></img>
+//         <h3 class="cart__item-name">${productObj.name}</h3>
+//         <h3 class="cart__item-price">${productObj.price}</h3>
+//         <button class="btn btn__primary btn__small" data-action="DECREASE_ITEM">&minus;</button>
+//         <h3 class="cart__item-quantity">${productObj.quantity}</h3>
+//         <button class="btn btn__primary btn__small" data-action="INCREASE_ITEM">&plus;</button>
+//         <button class="btn btn__danger btn__small" data-action="REMOVE_ITEM">&times;</button>
+//       </div>
+//     `);
+
+//     const cartItemEl = cartDOM.querySelector(`.cart__item[data-name="${productObj.name}"]`);
+//     handleCartItem(cartItemEl, productObj, document.querySelector(`[data-name="${productObj.name}"] ~ [data-action="ADD_TO_CART"]`));
+//   });
+// };
+
+// addToCartBtns.forEach((addToCartBtnEl) => {
+//   addToCartBtnEl.addEventListener("click", () => {
+//     const productEl = addToCartBtnEl.parentElement;
+//     const productObj = {
+//       image: productEl.querySelector(".product__image").src,
+//       name: productEl.querySelector(".product__name").textContent,
+//       price: productEl.querySelector(".product__price").textContent,
+//       quantity: 1
+//     }; 
+
+//     const isInCart = cart.some(cartItem => cartItem.name === productObj.name);
+//     if (!isInCart) {
+//       cartDOM.insertAdjacentHTML("beforeend", `
+//         <div class="cart__item" data-name="${productObj.name}">
+//           <img class="cart__item-image" src="${productObj.image}" alt="${productObj.name}"></img>
+//           <h3 class="cart__item-name">${productObj.name}</h3>
+//           <h3 class="cart__item-price">${productObj.price}</h3>
+//           <button class="btn btn__primary btn__small" data-action="DECREASE_ITEM">&minus;</button>
+//           <h3 class="cart__item-quantity">${productObj.quantity}</h3>
+//           <button class="btn btn__primary btn__small" data-action="INCREASE_ITEM">&plus;</button>
+//           <button class="btn btn__danger btn__small" data-action="REMOVE_ITEM">&times;</button>
+//         </div>
+//       `);
+
+//       cart.push(productObj);
+//       addToCartBtnEl.textContent = "In Cart";
+//       addToCartBtnEl.disabled = true;
+//       saveCartToLocalStorage();
+
+//       const cartItemEl = cartDOM.querySelector(`.cart__item[data-name="${productObj.name}"]`);
+//       handleCartItem(cartItemEl, productObj, addToCartBtnEl);
+//     }
+//   });
+// });
+
+// // ページ読み込み時にカートを復元
+// document.addEventListener("DOMContentLoaded", populateCartDOM);
