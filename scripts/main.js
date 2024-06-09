@@ -110,13 +110,13 @@ const handleCartItem = (cartItemDOM, productObj, addToCartBtnEl) => {
   const minusBtn = cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]');
   const removeBtn = cartItemDOM.querySelector('[data-action="REMOVE_ITEM"]');
 
-  // const removeItemFn = (cartItemDOM, productObj, addToCartBtnEl) => {
-  //   cartItemDOM.classList.add("cart__item-removed");
-  //   setTimeout(() => cartItemDOM.remove(), 300);
-  //   cart = cart.filter(cartItem => cartItem.name !== productObj.name);
-  //   addToCartBtnEl.textContent = "Add To Cart";
-  //   addToCartBtnEl.disabled = false;
-  // };
+  const removeItemFn = () => {
+    cartItemDOM.classList.add("cart__item-removed");
+    setTimeout(() => cartItemDOM.remove(), 300);
+    cart = cart.filter(cartItem => cartItem.name !== productObj.name);
+    addToCartBtnEl.textContent = "Add To Cart";
+    addToCartBtnEl.disabled = false;
+  };
 
   plusBtn.addEventListener("click", () => {
     cart.forEach(cartItem => {
@@ -130,7 +130,7 @@ const handleCartItem = (cartItemDOM, productObj, addToCartBtnEl) => {
       if (cartItem.name === productObj.name) {
         cartItem.quantity > 1
           ? updateCartItemQuantity(cartItemDOM, cartItem, -1)
-          : removeItemFn(cartItemDOM, productObj, addToCartBtnEl);
+          : removeItemFn();
       }
     });
   });
@@ -138,7 +138,7 @@ const handleCartItem = (cartItemDOM, productObj, addToCartBtnEl) => {
   removeBtn.addEventListener("click", () => {
     cart.forEach(cartItem => {
       cartItem.name === productObj.name
-        && removeItemFn(cartItemDOM, productObj, addToCartBtnEl);
+        && removeItemFn();
     });
   });
 };
@@ -176,11 +176,3 @@ addToCartBtns.forEach((addToCartBtnEl) => {
     }
   });
 });
-
-const removeItemFn = (cartItemDOM, productObj, addToCartBtnEl) => {
-  cartItemDOM.classList.add("cart__item-removed");
-  setTimeout(() => cartItemDOM.remove(), 300);
-  cart = cart.filter(cartItem => cartItem.name !== productObj.name);
-  addToCartBtnEl.textContent = "Add To Cart";
-  addToCartBtnEl.disabled = false;
-};
