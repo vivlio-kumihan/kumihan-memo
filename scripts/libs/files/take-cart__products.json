@@ -1,0 +1,8 @@
+[
+  { "url": "./images/products/beer.svg", "name": "Beer", "price": "600" },
+  { "url": "./images/products/energy-drink.svg", "name": "Energy Drink", "price": "500" },
+  { "url": "./images/products/juice.svg", "name": "Juice", "price": "400" },
+  { "url": "./images/products/milk.svg", "name": "Milk", "price": "250" },
+  { "url": "./images/products/mineral-water.svg", "name": "Mineral Water", "price": "1,000" },
+  { "url": "./images/products/smoothie.svg", "name": "Smoothie", "price": "2,000" }
+]
