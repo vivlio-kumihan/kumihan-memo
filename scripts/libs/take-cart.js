@@ -1,3 +1,7 @@
+/* 
+/*** カート機能を実装したクラス。
+*/
+
 "use strict";
 
 class TakeCart {
@@ -6,8 +10,13 @@ class TakeCart {
     this.cart = JSON.parse(localStorage.getItem("localStorageCart")) || [];
     // カートのDOMを生成。
     this.cartDOM = document.querySelector(".cart");
-    // カートに追加するボタンのDOM生成。
-    this.addToCartBtns = document.querySelectorAll('[data-action="ADD_TO_CART"]');
+
+    /////////////////////////////////// 
+    // 削除点
+    // // カートに追加するボタンのDOM生成。
+    // this.addToCartBtns = document.querySelectorAll('[data-action="ADD_TO_CART"]');
+    /////////////////////////////////// 
+
     // メインの関数
     this._init();
   }
@@ -105,6 +114,12 @@ class TakeCart {
   }
   _init() {
     // カート追加ボタン（複数）のインスタンスを待機。
+
+    ////////////////////////////////
+    // 追加点
+    this.addToCartBtns = document.querySelectorAll('[data-action="ADD_TO_CART"]');    
+    ////////////////////////////////
+
     this.addToCartBtns.forEach((addToCartBtnEl) => {
       // 追加ボタンをクリックするイベントを通して購入（予定）商品のインスタンスを発生させる。
       // このアプリの諸元の発火元。  
@@ -141,8 +156,13 @@ class TakeCart {
     });
     
     // ページ読み込み時にカートを復元
-    document.addEventListener("DOMContentLoaded", () => {
-      this.afterReloadeGenerateCartDOM();
-    });
+    this.afterReloadeGenerateCartDOM();
+    
+    ///////////////////////////////////
+    // 削除点
+    // document.addEventListener("DOMContentLoaded", () => {
+    //   this.afterReloadeGenerateCartDOM();
+    // });
+    ///////////////////////////////////
   }
 }
