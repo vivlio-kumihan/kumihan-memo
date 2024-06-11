@@ -127,21 +127,40 @@ class TakeCart {
       // 追加ボタンをクリックするイベントを通して購入（予定）商品のインスタンスを発生させる。
       // このアプリの諸元の発火元。  
       addToCartBtnEl.addEventListener("click", () => {
+        // // 選択した商品のDOMを生成。
+        // const selectProductEl = addToCartBtnEl.parentElement;
+        // const types = selectProductEl.querySelectorAll(".product__type-item");
+        // if (types.length !== 0) {
+        //   let typeObject = Array.from(types).reduce((obj, el) => {
+        //     el.textContent 
+        //   }, {});
+        // } else {
+        //   typeObject.push("");
+        // }
+
         // 選択した商品のDOMを生成。
         const selectProductEl = addToCartBtnEl.parentElement;
+
+        // typeパラメーターに値を代入する。
         const types = selectProductEl.querySelectorAll(".product__type-item");
-        let typeArr = [];
-        if (types.length !== 0) {
-          typeArr = Array.from(types).map(el => el.textContent);
-        } else {
-          typeArr.push("");
-        }
+        const typeObject = Array.from(types).reduce((object, el) => {
+          // const key = el.getAttribute("data-cart-type-name");
+          const value = el.textContent || "";
+          object.name = value;
+          object.quantity = 0;
+          return object;
+        }, {});
+
+        // typesObjが空の場合、デフォルトのキーと空文字列の値を追加
+        if (Object.keys(typeObject).length === 0) {
+          typeObject["self"] = "";
+        }        
         
         // 選択した商品各項目の値をオブジェクトに格納。
         const productObj = {
           image: selectProductEl.querySelector(".product__image").src,
           name: selectProductEl.querySelector(".product__name").textContent,
-          type: typeArr,
+          type: typeObject,
           price: selectProductEl.querySelector(".product__price").textContent,
           quantity: 1,
           inCart: true
