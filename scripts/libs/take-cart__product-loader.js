@@ -36,7 +36,7 @@ class ProductLoader {
         const clone = document.importNode(template, true);
         clone.querySelector('.product__image').setAttribute("src", product.url);
         clone.querySelector('.product__name').textContent = product.name;
-        clone.querySelector('.product__type').innerHTML = product.type.map(val => `<li class="product__type-item">${ val }</li>`).join("");
+        clone.querySelector('.product__type').innerHTML = product.type.map(val => `<li class="product__type-item">${val}</li>`).join("");
         clone.querySelector('.product__price').textContent = product.price;
         clone.querySelector('button').setAttribute("data-product-name", product.name);
         productList.appendChild(clone);
