@@ -1,14 +1,8 @@
 [
   { "url": "./images/products/beer.svg", "name": "Beer", "type": ["赤", "青", "緑"], "price": "600" },
-  { "url": "./images/products/energy-drink.svg", "name": "Energy Drink", "type": ["家内安全", "方除", "魔除"], "price": "500" },
-  { "url": "./images/products/juice.svg", "name": "Juice", "type": ["白", "黒", "黄"], "price": "400" },
+  { "url": "./images/products/energy-drink.svg", "name": "Energy Drink", "type": [], "price": "500" },
+  { "url": "./images/products/juice.svg", "name": "Juice", "type": [], "price": "400" },
   { "url": "./images/products/milk.svg", "name": "Milk", "type": ["おかめ", "おふく", "おたふく"], "price": "250" },
   { "url": "./images/products/mineral-water.svg", "name": "Mineral Water", "type": ["紫", "藍", "朱"], "price": "1,000" },
   { "url": "./images/products/smoothie.svg", "name": "Smoothie", "type": ["観音像", "菩薩像"], "price": "2,000" }
 ]
-
-
-
-
-
-

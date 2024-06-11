@@ -87,11 +87,14 @@ class TakeCart {
   }
   // cart要素に購入予定の商品のDOMを追加する関数を定義。
   createCartItemDOM(productObj) {
+    console.log(productObj);
+
     this.cartDOM.insertAdjacentHTML("beforeend", `
       <div class="cart__item" data-name="${productObj.name}">
         <img class="cart__item-image" src="${productObj.image}" alt="${productObj.name}"></img>
         <h3 class="cart__item-name">${productObj.name}</h3>
         <h3 class="cart__item-price">${productObj.price}</h3>
+        <ul class="cart__item-type"></ul>
         <button class="btn btn__primary btn__small" data-action="DECREASE_ITEM">&minus;</button>
         <h3 class="cart__item-quantity">${productObj.quantity}</h3>
         <button class="btn btn__primary btn__small" data-action="INCREASE_ITEM">&plus;</button>
@@ -114,6 +117,7 @@ class TakeCart {
   }
   _init() {
     // カート追加ボタン（複数）のインスタンスを待機。
+    // 追加ボタンのクリックでアプリが発火する。
 
     ////////////////////////////////
     // 追加点
@@ -126,10 +130,13 @@ class TakeCart {
       addToCartBtnEl.addEventListener("click", () => {
         // 選択した商品のDOMを生成。
         const productEl = addToCartBtnEl.parentElement;
+
+        
         // 選択した商品各項目の値をオブジェクトに格納。
         const productObj = {
           image: productEl.querySelector(".product__image").src,
           name: productEl.querySelector(".product__name").textContent,
+          type: "",
           price: productEl.querySelector(".product__price").textContent,
           quantity: 1,
           inCart: true
