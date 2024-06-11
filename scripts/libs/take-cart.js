@@ -88,12 +88,15 @@ class TakeCart {
   // cart要素に購入予定の商品のDOMを追加する関数を定義。
   createCartItemDOM(productObj) {
 
+    console.log(productObj.type);
+    const cartLists = "<li></li>";
+
     this.cartDOM.insertAdjacentHTML("beforeend", `
       <div class="cart__item" data-name="${productObj.name}">
         <img class="cart__item-image" src="${productObj.image}" alt="${productObj.name}"></img>
         <h3 class="cart__item-name">${productObj.name}</h3>
         <h3 class="cart__item-price">${productObj.price}</h3>
-        <ul class="cart__item-type"></ul>
+        <ul class="cart__item-type">${cartLists}</ul>
         <button class="btn btn__primary btn__small" data-action="DECREASE_ITEM">&minus;</button>
         <h3 class="cart__item-quantity">${productObj.quantity}</h3>
         <button class="btn btn__primary btn__small" data-action="INCREASE_ITEM">&plus;</button>
@@ -127,40 +130,28 @@ class TakeCart {
       // 追加ボタンをクリックするイベントを通して購入（予定）商品のインスタンスを発生させる。
       // このアプリの諸元の発火元。  
       addToCartBtnEl.addEventListener("click", () => {
-        // // 選択した商品のDOMを生成。
-        // const selectProductEl = addToCartBtnEl.parentElement;
-        // const types = selectProductEl.querySelectorAll(".product__type-item");
-        // if (types.length !== 0) {
-        //   let typeObject = Array.from(types).reduce((obj, el) => {
-        //     el.textContent 
-        //   }, {});
-        // } else {
-        //   typeObject.push("");
-        // }
-
         // 選択した商品のDOMを生成。
         const selectProductEl = addToCartBtnEl.parentElement;
-
+        
         // typeパラメーターに値を代入する。
         const types = selectProductEl.querySelectorAll(".product__type-item");
-        const typeObject = Array.from(types).reduce((object, el) => {
-          // const key = el.getAttribute("data-cart-type-name");
-          const value = el.textContent || "";
-          object.name = value;
-          object.quantity = 0;
-          return object;
-        }, {});
+        const typeArray = Array.from(types).map(el => {
+          return {
+            name: el.textContent || "",
+            quantity: 0
+          };
+        });
 
-        // typesObjが空の場合、デフォルトのキーと空文字列の値を追加
-        if (Object.keys(typeObject).length === 0) {
-          typeObject["self"] = "";
-        }        
+        // typesArrayが空の場合、デフォルトのキーと空文字列の値を追加
+        if (typeArray.length === 0) {
+          typeArray.push({name: "self", quantity: 0});
+        }     
         
         // 選択した商品各項目の値をオブジェクトに格納。
         const productObj = {
           image: selectProductEl.querySelector(".product__image").src,
           name: selectProductEl.querySelector(".product__name").textContent,
-          type: typeObject,
+          type: typeArray,
           price: selectProductEl.querySelector(".product__price").textContent,
           quantity: 1,
           inCart: true
@@ -186,7 +177,7 @@ class TakeCart {
       });
     });
     
-    console.log(this.cart);
+    // console.log(this.cart);
     // ページ読み込み時にカートを復元
     this.afterReloadeGenerateCartDOM();
     
