@@ -87,7 +87,6 @@ class TakeCart {
   }
   // cart要素に購入予定の商品のDOMを追加する関数を定義。
   createCartItemDOM(productObj) {
-    console.log(productObj);
 
     this.cartDOM.insertAdjacentHTML("beforeend", `
       <div class="cart__item" data-name="${productObj.name}">
@@ -129,15 +128,21 @@ class TakeCart {
       // このアプリの諸元の発火元。  
       addToCartBtnEl.addEventListener("click", () => {
         // 選択した商品のDOMを生成。
-        const productEl = addToCartBtnEl.parentElement;
-
+        const selectProductEl = addToCartBtnEl.parentElement;
+        const types = selectProductEl.querySelectorAll(".product__type-item");
+        let typeArr = [];
+        if (types.length !== 0) {
+          typeArr = Array.from(types).map(el => el.textContent);
+        } else {
+          typeArr.push("");
+        }
         
         // 選択した商品各項目の値をオブジェクトに格納。
         const productObj = {
-          image: productEl.querySelector(".product__image").src,
-          name: productEl.querySelector(".product__name").textContent,
-          type: "",
-          price: productEl.querySelector(".product__price").textContent,
+          image: selectProductEl.querySelector(".product__image").src,
+          name: selectProductEl.querySelector(".product__name").textContent,
+          type: typeArr,
+          price: selectProductEl.querySelector(".product__price").textContent,
           quantity: 1,
           inCart: true
         };
@@ -162,6 +167,7 @@ class TakeCart {
       });
     });
     
+    console.log(this.cart);
     // ページ読み込み時にカートを復元
     this.afterReloadeGenerateCartDOM();
     
