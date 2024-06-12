@@ -1,5 +1,5 @@
 /* 
-/*** カート機能を実装したクラス。
+/*** カート機能を実装したクラスを定義。
 */
 
 "use strict";
@@ -10,22 +10,18 @@ class TakeCart {
     this.cart = JSON.parse(localStorage.getItem("localStorageCart")) || [];
     // カートのDOMを生成。
     this.cartDOM = document.querySelector(".cart");
-
-    /////////////////////////////////// 
-    // 削除点
-    // // カートに追加するボタンのDOM生成。
-    // this.addToCartBtns = document.querySelectorAll('[data-action="ADD_TO_CART"]');
-    /////////////////////////////////// 
-
     // メインの関数
     this._init();
   }
+
 
   // カートのデータの追加・変化をlocalStorageへ保存。
   saveCartToLocalStorage() {
     localStorage.setItem("localStorageCart", JSON.stringify(this.cart));
   }
-  // 注文数の取り扱いについての関数を定義。
+
+
+  // 注文商品数の取り扱いについての関数を定義。
   updateCartItemQuantity(cartItemDOM, cartItem, increment) {
     cartItem.quantity += increment;
     cartItemDOM.querySelector(".cart__item-quantity").textContent = cartItem.quantity;
@@ -35,6 +31,22 @@ class TakeCart {
     // localStorageへ保存。
     this.saveCartToLocalStorage();
   }
+  
+
+  // // 注文するタイプの数量についての取り扱いを関数に定義。
+  // updateOrderTypeQuantity(cartItemDOM, cartItem, increment) {
+  //   // 注文するタイプの名前にアクセスする必要がある。///////////////////////////////////////////////////////////////////
+  //   // cartItem.type.name.quantity ではアクセス不可
+  //   cartItem.type.name.quantity += increment;
+  //   cartItemDOM.querySelector("属性をつけないとDOMにアクセスできない").textContent = cartItem.type.name.quantity;
+  //   (cartItem.type.name.quantity === 1)
+  //     ? cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]').classList.add("btn__danger")
+  //     : cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]').classList.remove("btn__danger");
+  //   // localStorageへ保存。
+  //   this.saveCartToLocalStorage();
+  // }
+
+
   // アイテムを削除で発火する事柄に関する関数を定義。
   removeItemFn(cartItemDOM, localStrageCartItem, removedEl) {
     cartItemDOM.classList.add("cart__item-removed");
@@ -45,33 +57,39 @@ class TakeCart {
     // localStorageへ保存。
     this.saveCartToLocalStorage();
   }
+
+
   // イベントリスナーを登録した関数を定義。
   handleCartItem(cartItemDOM, localStrageCartItem, targetEl) {
     // プラス、マイナス、削除ボタンのDOM生成。
-    const plusBtn = cartItemDOM.querySelector('[data-action="INCREASE_ITEM"]');
-    const minusBtn = cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]');
+    const plusBtns = cartItemDOM.querySelectorAll('[data-action="INCREASE_ITEM"]');
+    const minusBtns = cartItemDOM.querySelectorAll('[data-action="DECREASE_ITEM"]');
     const removeBtn = cartItemDOM.querySelector('[data-action="REMOVE_ITEM"]');
 
-    
     // プラスボタンのイベント。
-    plusBtn.addEventListener("click", () => {
-      this.cart.forEach(cartItem => {
-        if (cartItem.name === localStrageCartItem.name) {
-          this.updateCartItemQuantity(cartItemDOM, cartItem, 1);
-        }
+    plusBtns.forEach(plusBtn => {
+      console.log(plusBtn);
+      plusBtn.addEventListener("click", () => {
+        this.cart.forEach(cartItem => {
+          if (cartItem.name === localStrageCartItem.name) {
+            this.updateCartItemQuantity(cartItemDOM, cartItem, 1);
+          }
+        });
       });
-    });
+    })
 
     // マイナスボタンのイベント。
-    minusBtn.addEventListener("click", () => {
-      this.cart.forEach(cartItem => {
-        if (cartItem.name === localStrageCartItem.name) {
-          cartItem.quantity > 1
-            ? this.updateCartItemQuantity(cartItemDOM, cartItem, -1)
-            : this.removeItemFn(cartItemDOM, localStrageCartItem, targetEl);
-        }
+    minusBtns.forEach(minusBtn => {
+      minusBtn.addEventListener("click", () => {
+        this.cart.forEach(cartItem => {
+          if (cartItem.name === localStrageCartItem.name) {
+            cartItem.quantity > 1
+              ? this.updateCartItemQuantity(cartItemDOM, cartItem, -1)
+              : this.removeItemFn(cartItemDOM, localStrageCartItem, targetEl);
+          }
+        });
       });
-    });
+    })
 
     // 削除ボタンのイベント。
     removeBtn.addEventListener("click", () => {
@@ -102,7 +120,7 @@ class TakeCart {
           <div class="item-title">${name}</div>
           <div class="counter">
             <button class="btn btn__primary btn__small" data-action="DECREASE_ITEM">&minus;</button>
-            <h3 class="cart__item-type-quantity">${quantity}</h3>
+            <h3 class="cart__item-type-quantity" data-item-type-name="${name}">${quantity}</h3>
             <button class="btn btn__primary btn__small" data-action="INCREASE_ITEM">&plus;</button>
           </div>
         </li>
@@ -110,6 +128,7 @@ class TakeCart {
       // 生成したli要素を連結して返す      
       return liElements + liEl;
     }, "");   
+
 
     this.cartDOM.insertAdjacentHTML("beforeend", `
       <div class="cart__item" data-name="${localStrageCartItem.name}">
@@ -130,12 +149,14 @@ class TakeCart {
   afterReloadeGenerateCartDOM() {
     this.cart.forEach(localStrageCartItem => {
       const cartItemEl = this.createCartItemDOM(localStrageCartItem);
-      const productAddToCartBtnEl = document.querySelector(`[data-product-name="${localStrageCartItem.name}"]`);
+      const productAddToCartBtnEl = document.querySelector(`[data-productName="${localStrageCartItem.name}"]`);
       productAddToCartBtnEl &&
         this.productAddBtnStateFn(productAddToCartBtnEl, "In Cart", true);
       this.handleCartItem(cartItemEl, localStrageCartItem, productAddToCartBtnEl);
     });
   }
+
+
   _init() {
     // カート追加ボタン（複数）のインスタンスを待機。
     // 追加ボタンのクリックでアプリが発火する。
@@ -174,6 +195,7 @@ class TakeCart {
           inCart: true
         };
     
+
         // カートに投入する商品と同じものがカートの中にあれば『真（true）』を返す。
         const isInCart = this.cart.some(cartItem => cartItem.name === localStrageCartItem.name);
         // カートに投入する商品と同じものがカートの中に『無い』ことを条件に、
@@ -193,16 +215,10 @@ class TakeCart {
         }
       });
     });
-    
+  
+
     // console.log(this.cart);
     // ページ読み込み時にカートを復元
     this.afterReloadeGenerateCartDOM();
-    
-    ///////////////////////////////////
-    // 削除点
-    // document.addEventListener("DOMContentLoaded", () => {
-    //   this.afterReloadeGenerateCartDOM();
-    // });
-    ///////////////////////////////////
   }
 }
