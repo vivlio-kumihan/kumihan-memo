@@ -123,24 +123,12 @@ class TakeCart {
   }
 
 
-
-
-
-
-
-
-
-
-
-
   // リロード後にLocalStrageに保存しているcart配列の値を使って
   // product要素のボタンの状態を維持するための関数を定義。
   // また、リロード後は、こちらのhandleCartItem関数で状態変化を扱う。
   afterReloadeGenerateCartDOM() {
-    console.log(this.cart);
     this.cart.forEach(localStrageCartItem => {
       const cartItemEl = this.createCartItemDOM(localStrageCartItem);
-      console.log(cartItemEl);
       const productAddToCartBtnEl = document.querySelector(`[data-product-name="${localStrageCartItem.name}"]`);
       productAddToCartBtnEl &&
         this.productAddBtnStateFn(productAddToCartBtnEl, "In Cart", true);
@@ -162,26 +150,47 @@ class TakeCart {
       addToCartBtnEl.addEventListener("click", () => {
         // 選択した商品のDOMを生成。
         const selectProductEl = addToCartBtnEl.parentElement;
-        
+
         // typeパラメーターに値を代入する。
         const types = selectProductEl.querySelectorAll(".product__type-item");
-        const typeArray = Array.from(types).map(el => {
-          return {
-            name: el.textContent || "",
-            quantity: 0
-          };
-        });
+        let typesArr = [];
+        if (types.length !== 0) {
+          typesArr = Array.from(types).reduce((arr, dom) => {
+            arr.push({ name: dom.textContent, quantity: 0 });
+            return arr;
+          }, []);
+        } else {
+          typesArr = [{ name: "SELF", quantity: 0 }];
+        }        
+        // const typeArray = Array.from(types).reduce((resultArr, el, arr) => {
+        //   if (arr.length !== 0) {
+        //     resultArr.push({ name: el.textContent, quantity: 0 });
+        //     return resultArr;
+        //   }
+        // }, []);
 
-        // typesArrayが空の場合、デフォルトのキーと空文字列の値を追加
-        if (typeArray.length === 0) {
-          typeArray.push({name: "self", quantity: 0});
-        }     
+        // // typesArrayが空の場合、デフォルトのキーと空文字列の値を追加
+        // if (typeArray.length === 0) {
+        //   typeArray.push({name: "self", quantity: 0});
+        // }    
+        
+        // // typeパラメーターに値を代入する。
+        // const types = selectProductEl.querySelectorAll(".product__type-item");
+        // const typeArray = Array.from(types).reduce((resultArr, el, arr) => {
+        //   if (arr.length !== 0) {
+        //     resultArr.push({ name: el.textContent, quantity: 0 });
+        //     return resultArr;
+        //   } else {
+        //     resultArr.push({name: "self", quantity: 0});
+        //     return resultArr;
+        //   }
+        // }, []);        
         
         // 選択した商品各項目の値をオブジェクトに格納。
         const localStrageCartItem = {
           image: selectProductEl.querySelector(".product__image").src,
           name: selectProductEl.querySelector(".product__name").textContent,
-          types: typeArray,
+          types: typesArr,
           price: selectProductEl.querySelector(".product__price").textContent,
           quantity: 1,
           inCart: true
