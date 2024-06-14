@@ -19,32 +19,30 @@ class TakeCart {
   saveCartToLocalStorage() {
     localStorage.setItem("localStorageCart", JSON.stringify(this.cart));
   }
-
-
-  // 注文商品数の取り扱いについての関数を定義。
-  updateCartItemQuantity(cartItemDOM, cartItem, increment) {
-    cartItem.quantity += increment;
-    cartItemDOM.querySelector(".cart__item-quantity").textContent = cartItem.quantity;
-    (cartItem.quantity === 1)
-      ? cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]').classList.add("btn__danger")
-      : cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]').classList.remove("btn__danger");
-    // localStorageへ保存。
-    this.saveCartToLocalStorage();
-  }
   
 
-  // // 注文するタイプの数量についての取り扱いを関数に定義。
-  // updateOrderTypeQuantity(cartItemDOM, cartItem, increment) {
-  //   // 注文するタイプの名前にアクセスする必要がある。///////////////////////////////////////////////////////////////////
-  //   // cartItem.type.name.quantity ではアクセス不可
-  //   cartItem.type.name.quantity += increment;
-  //   cartItemDOM.querySelector("属性をつけないとDOMにアクセスできない").textContent = cartItem.type.name.quantity;
-  //   (cartItem.type.name.quantity === 1)
-  //     ? cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]').classList.add("btn__danger")
-  //     : cartItemDOM.querySelector('[data-action="DECREASE_ITEM"]').classList.remove("btn__danger");
-  //   // localStorageへ保存。
-  //   this.saveCartToLocalStorage();
-  // }
+  // 注文するタイプの数量についての取り扱いを関数に定義
+  updateOrderTypeQuantity(localStrageCartItem, typeName, increment) {
+    localStrageCartItem.types.forEach(type => {
+      if (type.name === typeName) {
+        type.quantity += increment;
+        // 数量が負の値にならないようにする
+        type.quantity = Math.max(0, type.quantity);
+        this.saveCartToLocalStorage();
+        
+        // 対応するDOM要素の数量を更新
+        const targetTypeQuantityEl = document.querySelector(`[data-item-type-name="${typeName}"]`);
+        if (targetTypeQuantityEl) {
+          // タイプの数量の更新
+          targetTypeQuantityEl.textContent = type.quantity;
+          // タイプの数量が0とそれ以外の場合のスタイルの変更
+          type.quantity !== 0
+            ? targetTypeQuantityEl.classList.remove("zero-ami")
+            : targetTypeQuantityEl.classList.add("zero-ami");
+        }
+      }
+    });
+  }
 
 
   // アイテムを削除で発火する事柄に関する関数を定義。
@@ -54,7 +52,6 @@ class TakeCart {
     this.cart = this.cart.filter(cartItem => cartItem.name !== localStrageCartItem.name);
     removedEl.textContent = "Add To Cart";
     removedEl.disabled = false;
-    // localStorageへ保存。
     this.saveCartToLocalStorage();
   }
 
@@ -68,28 +65,19 @@ class TakeCart {
 
     // プラスボタンのイベント。
     plusBtns.forEach(plusBtn => {
-      console.log(plusBtn);
       plusBtn.addEventListener("click", () => {
-        this.cart.forEach(cartItem => {
-          if (cartItem.name === localStrageCartItem.name) {
-            this.updateCartItemQuantity(cartItemDOM, cartItem, 1);
-          }
-        });
-      });
-    })
-
+        const typeName = plusBtn.getAttribute("data-type-fluctuation");
+        this.updateOrderTypeQuantity(localStrageCartItem, typeName, 1);        
+      });   
+    });
+    
     // マイナスボタンのイベント。
     minusBtns.forEach(minusBtn => {
       minusBtn.addEventListener("click", () => {
-        this.cart.forEach(cartItem => {
-          if (cartItem.name === localStrageCartItem.name) {
-            cartItem.quantity > 1
-              ? this.updateCartItemQuantity(cartItemDOM, cartItem, -1)
-              : this.removeItemFn(cartItemDOM, localStrageCartItem, targetEl);
-          }
-        });
+        const typeName = minusBtn.getAttribute("data-type-fluctuation");
+        this.updateOrderTypeQuantity(localStrageCartItem, typeName, -1);
       });
-    })
+    });
 
     // 削除ボタンのイベント。
     removeBtn.addEventListener("click", () => {
@@ -111,25 +99,25 @@ class TakeCart {
   // cart要素に購入予定の商品のDOMを追加する関数を定義。
   createCartItemDOM(localStrageCartItem) {
     // typeのリストを生成。
-    const typeLiElms = Array.from(localStrageCartItem.types).reduce((liElements, { name, quantity }) => {
-      // typeがないitemについてはtype名を表示させない。
-      name = name !== "SELF" ? name : "";
+    const typeLiElms = Array.from(localStrageCartItem.types)
+                        .reduce((liElements, { name, quantity }) => {
+      // typeがないitemについては、type名を表示させない。
+      const displayName = name !== "SELF" ? name : "";
       // li要素のテンプレートを作成    
       const liEl = `
         <li>
-          <div class="item-title">${name}</div>
+          <div class="item-title">${displayName}</div>
           <div class="counter">
-            <button class="btn btn__primary btn__small" data-action="DECREASE_ITEM">&minus;</button>
-            <h3 class="cart__item-type-quantity" data-item-type-name="${name}">${quantity}</h3>
-            <button class="btn btn__primary btn__small" data-action="INCREASE_ITEM">&plus;</button>
+            <button class="btn btn__primary btn__small" data-action="DECREASE_ITEM" data-type-fluctuation="${name}">&minus;</button>
+            <h3 class="cart__item-type-quantity zero-ami" data-item-type-name="${name}">${quantity}</h3>
+            <button class="btn btn__primary btn__small" data-action="INCREASE_ITEM" data-type-fluctuation="${name}">&plus;</button>
           </div>
         </li>
       `;
       // 生成したli要素を連結して返す      
       return liElements + liEl;
     }, "");   
-
-
+      
     this.cartDOM.insertAdjacentHTML("beforeend", `
       <div class="cart__item" data-name="${localStrageCartItem.name}">
         <img class="cart__item-image" src="${localStrageCartItem.image}" alt="${localStrageCartItem.name}"></img>
@@ -139,6 +127,7 @@ class TakeCart {
         <button class="btn btn__danger btn__small" data-action="REMOVE_ITEM">&times;</button>
       </div>
     `);
+
     return this.cartDOM.querySelector(`.cart__item[data-name="${localStrageCartItem.name}"]`);
   }
 
@@ -150,8 +139,8 @@ class TakeCart {
     this.cart.forEach(localStrageCartItem => {
       const cartItemEl = this.createCartItemDOM(localStrageCartItem);
       const productAddToCartBtnEl = document.querySelector(`[data-productName="${localStrageCartItem.name}"]`);
-      productAddToCartBtnEl &&
-        this.productAddBtnStateFn(productAddToCartBtnEl, "In Cart", true);
+      productAddToCartBtnEl
+        && this.productAddBtnStateFn(productAddToCartBtnEl, "In Cart", true);
       this.handleCartItem(cartItemEl, localStrageCartItem, productAddToCartBtnEl);
     });
   }
@@ -160,12 +149,7 @@ class TakeCart {
   _init() {
     // カート追加ボタン（複数）のインスタンスを待機。
     // 追加ボタンのクリックでアプリが発火する。
-
-    ////////////////////////////////
-    // 追加点
     this.addToCartBtns = document.querySelectorAll('[data-action="ADD_TO_CART"]');    
-    ////////////////////////////////
-
     this.addToCartBtns.forEach((addToCartBtnEl) => {
       // 追加ボタンをクリックするイベントを通して購入（予定）商品のインスタンスを発生させる。
       // このアプリの諸元の発火元。  
@@ -195,7 +179,6 @@ class TakeCart {
           inCart: true
         };
     
-
         // カートに投入する商品と同じものがカートの中にあれば『真（true）』を返す。
         const isInCart = this.cart.some(cartItem => cartItem.name === localStrageCartItem.name);
         // カートに投入する商品と同じものがカートの中に『無い』ことを条件に、
@@ -215,9 +198,7 @@ class TakeCart {
         }
       });
     });
-  
 
-    // console.log(this.cart);
     // ページ読み込み時にカートを復元
     this.afterReloadeGenerateCartDOM();
   }
