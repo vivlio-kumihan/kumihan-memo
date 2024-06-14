@@ -35,10 +35,6 @@ class TakeCart {
         if (targetTypeQuantityEl) {
           // タイプの数量の更新
           targetTypeQuantityEl.textContent = type.quantity;
-          // // タイプの数量が0とそれ以外の場合のスタイルの変更
-          // type.quantity !== 0
-          //   ? targetTypeQuantityEl.classList.remove("zero-ami")
-          //   : targetTypeQuantityEl.classList.add("zero-ami");
         }
       }
     });
@@ -200,7 +196,6 @@ class TakeCart {
       });
     });
 
-    console.log(this.cart);
     // ページ読み込み時にカートを復元
     this.afterReloadeGenerateCartDOM();
   }
