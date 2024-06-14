@@ -21,6 +21,14 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.cart__item-type-quantity {
+  font-weight: 900;
+}
+.cart__item-type-quantity.zero-ami {
+  font-weight: 400;
+  opacity: 0.5;
+}
+
 /* ----------------- Layout ----------------- */
 .main-container {
   max-width: 1200px;
