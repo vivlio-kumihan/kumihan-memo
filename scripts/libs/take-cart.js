@@ -31,14 +31,10 @@ class TakeCart {
         this.saveCartToLocalStorage();
         
         // 対応するDOM要素の数量を更新
-        const targetTypeQuantityEl = document.querySelector(`[data-item-type-name="${typeName}"]`);
+        const targetTypeQuantityEl = document.querySelector(`[data-item-name="${localStrageCartItem.name}"][data-item-type-name="${typeName}"]`);
         if (targetTypeQuantityEl) {
           // タイプの数量の更新
           targetTypeQuantityEl.textContent = type.quantity;
-          // タイプの数量が0とそれ以外の場合のスタイルの変更
-          type.quantity !== 0
-            ? targetTypeQuantityEl.classList.remove("zero-ami")
-            : targetTypeQuantityEl.classList.add("zero-ami");
         }
       }
     });
@@ -98,6 +94,7 @@ class TakeCart {
 
   // cart要素に購入予定の商品のDOMを追加する関数を定義。
   createCartItemDOM(localStrageCartItem) {
+    console.log(localStrageCartItem);
     // typeのリストを生成。
     const typeLiElms = Array.from(localStrageCartItem.types)
                         .reduce((liElements, { name, quantity }) => {
@@ -109,7 +106,7 @@ class TakeCart {
           <div class="item-title">${displayName}</div>
           <div class="counter">
             <button class="btn btn__primary btn__small" data-action="DECREASE_ITEM" data-type-fluctuation="${name}">&minus;</button>
-            <h3 class="cart__item-type-quantity zero-ami" data-item-type-name="${name}">${quantity}</h3>
+            <h3 class="cart__item-type-quantity" data-item-name="${localStrageCartItem.name}" data-item-type-name="${name}">${quantity}</h3>
             <button class="btn btn__primary btn__small" data-action="INCREASE_ITEM" data-type-fluctuation="${name}">&plus;</button>
           </div>
         </li>
