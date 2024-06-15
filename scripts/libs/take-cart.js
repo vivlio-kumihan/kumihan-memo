@@ -8,8 +8,12 @@ class TakeCart {
   constructor() {
     // 配列カートを初期化。
     this.cart = JSON.parse(localStorage.getItem("localStorageCart")) || [];
+
     // カートのDOMを生成。
     this.cartDOM = document.querySelector(".cart");
+
+    this.resultDOM = document.querySelector(".result");
+
     // メインの関数
     this._init();
   }
@@ -94,7 +98,6 @@ class TakeCart {
 
   // cart要素に購入予定の商品のDOMを追加する関数を定義。
   createCartItemDOM(localStrageCartItem) {
-    console.log(localStrageCartItem);
     // typeのリストを生成。
     const typeLiElms = Array.from(localStrageCartItem.types)
                         .reduce((liElements, { name, quantity }) => {
@@ -120,6 +123,7 @@ class TakeCart {
         <img class="cart__item-image" src="${localStrageCartItem.image}" alt="${localStrageCartItem.name}"></img>
         <h3 class="cart__item-name">${localStrageCartItem.name}</h3>
         <h3 class="cart__item-price">${localStrageCartItem.price}</h3>
+        // <h3 class="cart__item-sub-total">${localStrageCartItem.subTotal}</h3>
         <ul class="cart__item-types">${typeLiElms}</ul>
         <button class="btn btn__danger btn__small" data-action="REMOVE_ITEM">&times;</button>
       </div>
@@ -172,6 +176,7 @@ class TakeCart {
           name: selectProductEl.querySelector(".product__name").textContent,
           types: typesArr,
           price: selectProductEl.querySelector(".product__price").textContent,
+          // subTotal: 0,
           quantity: 1,
           inCart: true
         };
