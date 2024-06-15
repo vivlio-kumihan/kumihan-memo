@@ -1,11 +1,11 @@
 class TakeCartCalc {
   constructor(takeCartInstance) {
     this.cart = takeCartInstance.cart;
-    this.oderObj = this.calcTotal();
-    console.log(this.oderObj);
+    this.result = this.orderedEachItemResult();
+    // console.log(this.orderedEachItemResult);
   }
 
-  calcTotal() {
+  orderedEachItemResult() {
     const order = [];
 
     // cart 内の各アイテムに対して処理を行う
@@ -24,12 +24,9 @@ class TakeCartCalc {
           }
         });
 
-        // 内訳が空でない場合のみ、order に追加
-        if (Object.keys(orderTypeQuantityObj).length > 0) {
-          const subQuantity = Object.values(orderTypeQuantityObj).reduce((sum, quantity) => sum + quantity, 0);
-          const subtotal = parseFloat(itemObject.price) * subQuantity;
-          order.push({ "品名": itemObject.name, "内訳": orderTypeQuantityObj, "小計": subtotal });
-        }
+        const subQuantity = Object.values(orderTypeQuantityObj).reduce((sum, quantity) => sum + quantity, 0);
+        const subtotal = parseFloat(itemObject.price) * subQuantity;
+        order.push({ "品名": itemObject.name, "内訳": orderTypeQuantityObj, "小計": subQuantity > 0 ? subtotal : "―" });
       }
     });
 

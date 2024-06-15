@@ -12,8 +12,10 @@ class TakeCart {
     // カートのDOMを生成。
     this.cartDOM = document.querySelector(".cart");
 
-    this.resultDOM = document.querySelector(".result");
+    this.takeCartCalc = new TakeCartCalc(this);
 
+    // console.log(this.cart);
+    
     // メインの関数
     this._init();
   }
@@ -36,10 +38,22 @@ class TakeCart {
         
         // 対応するDOM要素の数量を更新
         const targetTypeQuantityEl = document.querySelector(`[data-item-name="${localStrageCartItem.name}"][data-item-type-name="${typeName}"]`);
+        
         if (targetTypeQuantityEl) {
           // タイプの数量の更新
           targetTypeQuantityEl.textContent = type.quantity;
         }
+
+        const orderedEachItemResults = this.takeCartCalc.orderedEachItemResult();
+        let namezSubTotal = document.querySelector(`[data-namez-sub-total="${localStrageCartItem.name}`);
+        orderedEachItemResults.forEach(item => {
+          if (item["品名"] === localStrageCartItem.name) {
+            const subQuantity = Object.values(item["内訳"]).reduce((sum, quantity) => sum + quantity, 0);
+            console.log(subQuantity, typeof subQuantity);
+            
+            namezSubTotal.textContent =  typeof subQuantity === "number" ? item["小計"] : "―";
+          }
+        });
       }
     });
   }
@@ -67,7 +81,7 @@ class TakeCart {
     plusBtns.forEach(plusBtn => {
       plusBtn.addEventListener("click", () => {
         const typeName = plusBtn.getAttribute("data-type-fluctuation");
-        this.updateOrderTypeQuantity(localStrageCartItem, typeName, 1);        
+        this.updateOrderTypeQuantity(localStrageCartItem, typeName, 1);          
       });   
     });
     
@@ -75,7 +89,7 @@ class TakeCart {
     minusBtns.forEach(minusBtn => {
       minusBtn.addEventListener("click", () => {
         const typeName = minusBtn.getAttribute("data-type-fluctuation");
-        this.updateOrderTypeQuantity(localStrageCartItem, typeName, -1);
+        this.updateOrderTypeQuantity(localStrageCartItem, typeName, -1);      
       });
     });
 
@@ -123,7 +137,7 @@ class TakeCart {
         <img class="cart__item-image" src="${localStrageCartItem.image}" alt="${localStrageCartItem.name}"></img>
         <h3 class="cart__item-name">${localStrageCartItem.name}</h3>
         <h3 class="cart__item-price">${localStrageCartItem.price}</h3>
-        // <h3 class="cart__item-sub-total">${localStrageCartItem.subTotal}</h3>
+        <h3 class="cart__item-sub-total" data-namez-sub-total="${localStrageCartItem.name}">―</h3>
         <ul class="cart__item-types">${typeLiElms}</ul>
         <button class="btn btn__danger btn__small" data-action="REMOVE_ITEM">&times;</button>
       </div>
@@ -205,3 +219,5 @@ class TakeCart {
     this.afterReloadeGenerateCartDOM();
   }
 }
+
+// this.resultDOM = document.querySelector(".result");
