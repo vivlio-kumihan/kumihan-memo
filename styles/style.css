@@ -245,4 +245,13 @@ button {
   left: 0;
   background: rgba(255, 255, 255, 0.7);
   cursor: wait;
+}
+
+.order__confirm, .order__back-to-cart {
+  width: 100%;
+  margin-top: 50px;
+  padding: 10px 20px;
+  font-weight: 900;
+  text-align: center;
+  background-color: antiquewhite;
 }/*# sourceMappingURL=style.css.map */

@@ -12,11 +12,10 @@ class TakeCart {
     // カートのDOMを生成。
     this.cartDOM = document.querySelector(".cart");
 
+    // take-cart__calc.jsのTakeCartCalcクラスを初期化。
     this.takeCartCalc = new TakeCartCalc(this);
 
-    // console.log(this.cart);
-    
-    // メインの関数
+    // メインの関数。
     this._init();
   }
 
@@ -24,6 +23,8 @@ class TakeCart {
   // カートのデータの追加・変化をlocalStorageへ保存。
   saveCartToLocalStorage() {
     localStorage.setItem("localStorageCart", JSON.stringify(this.cart));
+    // カート保存時にTakeCartCalcクラスもインスタンスを再作成。localStorageと同期させる心臓部。
+    this.takeCartCalc = new TakeCartCalc(this);
   }
   
 
@@ -34,26 +35,26 @@ class TakeCart {
         type.quantity += increment;
         // 数量が負の値にならないようにする
         type.quantity = Math.max(0, type.quantity);
-        this.saveCartToLocalStorage();
-        
+
         // 対応するDOM要素の数量を更新
         const targetTypeQuantityEl = document.querySelector(`[data-item-name="${localStrageCartItem.name}"][data-item-type-name="${typeName}"]`);
-        
+        // タイプの数量の更新
         if (targetTypeQuantityEl) {
-          // タイプの数量の更新
           targetTypeQuantityEl.textContent = type.quantity;
         }
 
-        const orderedEachItemResults = this.takeCartCalc.orderedEachItemResult();
-        let namezSubTotal = document.querySelector(`[data-namez-sub-total="${localStrageCartItem.name}`);
-        orderedEachItemResults.forEach(item => {
-          if (item["品名"] === localStrageCartItem.name) {
-            const subQuantity = Object.values(item["内訳"]).reduce((sum, quantity) => sum + quantity, 0);
-            console.log(subQuantity, typeof subQuantity);
-            
-            namezSubTotal.textContent =  typeof subQuantity === "number" ? item["小計"] : "―";
-          }
-        });
+        // subtotalを計算してlocalStrageCartItemを更新
+        const subQuantity = localStrageCartItem.types.reduce((sum, type) => sum + type.quantity, 0);
+        localStrageCartItem.subTotal = subQuantity > 0 ? localStrageCartItem.price * subQuantity : "―";
+
+        // subtotalを表示するDOM要素を更新
+        const namezSubTotal = document.querySelector(`[data-namez-sub-total="${localStrageCartItem.name}"]`);
+        if (namezSubTotal) {
+          namezSubTotal.textContent = localStrageCartItem.subTotal > 0 ? localStrageCartItem.subTotal : "―";
+        }  
+
+        // 変更をLocalStorageへ保存
+        this.saveCartToLocalStorage();                 
       }
     });
   }
@@ -131,13 +132,13 @@ class TakeCart {
       // 生成したli要素を連結して返す      
       return liElements + liEl;
     }, "");   
-      
+
     this.cartDOM.insertAdjacentHTML("beforeend", `
       <div class="cart__item" data-name="${localStrageCartItem.name}">
         <img class="cart__item-image" src="${localStrageCartItem.image}" alt="${localStrageCartItem.name}"></img>
         <h3 class="cart__item-name">${localStrageCartItem.name}</h3>
         <h3 class="cart__item-price">${localStrageCartItem.price}</h3>
-        <h3 class="cart__item-sub-total" data-namez-sub-total="${localStrageCartItem.name}">―</h3>
+        <h3 class="cart__item-sub-total" data-namez-sub-total="${localStrageCartItem.name}">${localStrageCartItem.subTotal}</h3>
         <ul class="cart__item-types">${typeLiElms}</ul>
         <button class="btn btn__danger btn__small" data-action="REMOVE_ITEM">&times;</button>
       </div>
@@ -189,8 +190,8 @@ class TakeCart {
           image: selectProductEl.querySelector(".product__image").src,
           name: selectProductEl.querySelector(".product__name").textContent,
           types: typesArr,
+          subTotal: "―",
           price: selectProductEl.querySelector(".product__price").textContent,
-          // subTotal: 0,
           quantity: 1,
           inCart: true
         };
@@ -205,7 +206,7 @@ class TakeCart {
           // カート配列に商品のオブジェクトを差し込む。
           this.cart.push(localStrageCartItem);
           // カートに追加ボタンの表示を変える。
-          this.productAddBtnStateFn(addToCartBtnEl,"In Cart", true);
+          this.productAddBtnStateFn(addToCartBtnEl, "In Cart", true);
           // localStorageへ保存。
           this.saveCartToLocalStorage();
           // カートの中で独立した商品のインスタンスを確保し状態を変えられるように準備した関数を宣言する。
@@ -215,9 +216,58 @@ class TakeCart {
       });
     });
 
+    // 注文を作る。
+    this.confirmOrderBtn = document.querySelector(".order__confirm");
+    this.orderResultEl = document.querySelector(".order-result");
+    this.backToCartBtn = document.querySelector(".order__back-to-cart"); // 追加: 戻るボタン    
+
+    this.confirmOrderBtn.addEventListener("click", () => {
+      const getOrderlistEl = () => {
+        // orderedEachItemResult()から配列を取得する。
+        const orderItems = this.takeCartCalc.orderedEachItemResult();
+        console.log(orderItems);
+        // reduce()を使用してリストアイテムのHTMLを生成する。
+        const liContent = orderItems.reduce((acc, obj) => {
+          // 個数はオブジェクトなので、文字列に変換するため分けて処理する。
+          const orderQuantity = Object.keys(obj["内訳"]).reduce((acc, key) => {
+            const list = key !== "SELF"
+              ? `<span>${key}／${obj["内訳"][key]}個</span>`
+              : `<span>${obj["内訳"][key]}個</span>`;
+            return acc + list;
+          }, "");
+          // li要素の生成。
+          const itemLiContent = `
+            <li data-order-item-name=${obj["品名"]}>
+              <div class="name">品名 : ${obj["品名"]}</div>
+              <div class="quantity">数量 : ${orderQuantity}</div>
+              <div class="sub-total">小計 : ${obj["小計"]}円</div>
+            </li>
+          `;
+          // accumulatorに現在のアイテムを追加して統合していく。
+          return acc + itemLiContent; // 
+        }, "");
+        return liContent;
+      };
+
+      // 既存のリストをクリア
+      this.orderResultEl.innerHTML = '';      
+
+      // 生成されたHTML文字列をDOM要素に変換
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = getOrderlistEl();
+      Array.from(tempDiv.children).forEach(el => {
+        this.orderResultEl.prepend(el);
+      })
+    });
+
+
+    // 戻るボタンのイベントリスナーを追加
+    this.backToCartBtn.addEventListener("click", () => {
+      this.orderResultEl.innerHTML = '';
+    });
+
+
     // ページ読み込み時にカートを復元
     this.afterReloadeGenerateCartDOM();
   }
 }
-
-// this.resultDOM = document.querySelector(".result");
