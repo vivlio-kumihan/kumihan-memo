@@ -148,7 +148,7 @@ class TakeCart {
   }
 
 
-  // リロード後にLocalStrageに保存しているcart配列の値を使って
+  // リロード後にLocalStrageに保存している配列cartの値を使って
   // product要素のボタンの状態を維持するための関数を定義。
   // また、リロード後は、こちらのhandleCartItem関数で状態変化を扱う。
   afterReloadeGenerateCartDOM() {
@@ -219,7 +219,7 @@ class TakeCart {
     // 注文を作る。
     this.confirmOrderBtn = document.querySelector(".order__confirm");
     this.orderResultEl = document.querySelector(".order-result");
-    this.backToCartBtn = document.querySelector(".order__back-to-cart"); // 追加: 戻るボタン    
+    this.backToCartBtn = document.querySelector(".order__back-to-cart");
 
     this.confirmOrderBtn.addEventListener("click", () => {
       const getOrderlistEl = () => {
@@ -244,7 +244,7 @@ class TakeCart {
             </li>
           `;
           // accumulatorに現在のアイテムを追加して統合していく。
-          return acc + itemLiContent; // 
+          return acc + itemLiContent;
         }, "");
         return liContent;
       };
@@ -261,13 +261,13 @@ class TakeCart {
     });
 
 
-    // 戻るボタンのイベントリスナーを追加
+    // 戻るボタンのイベントリスナー。
     this.backToCartBtn.addEventListener("click", () => {
       this.orderResultEl.innerHTML = '';
     });
 
 
-    // ページ読み込み時にカートを復元
+    // ページ読み込み時にカートを復元。
     this.afterReloadeGenerateCartDOM();
   }
 }
