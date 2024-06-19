@@ -68,6 +68,8 @@ class TakeCart {
     removedEl.textContent = "Add To Cart";
     removedEl.disabled = false;
     this.saveCartToLocalStorage();
+    // TakeCartCalc の orderedEachItemResult から該当アイテムを削除する
+    this.takeCartCalc.removeOrderedItem(localStrageCartItem.name);
   }
 
 
@@ -93,6 +95,7 @@ class TakeCart {
         this.updateOrderTypeQuantity(localStrageCartItem, typeName, -1);      
       });
     });
+
 
     // 削除ボタンのイベント。
     removeBtn.addEventListener("click", () => {

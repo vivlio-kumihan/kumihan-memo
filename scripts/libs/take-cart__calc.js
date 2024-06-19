@@ -1,9 +1,9 @@
 class TakeCartCalc {
   constructor(takeCartInstance) {
     this.cart = takeCartInstance.cart;
-    this.result = this.orderedEachItemResult();
-    // console.log(this.orderedEachItemResult());
+    this.orderedItems = this.orderedEachItemResult();
   }
+
 
   orderedEachItemResult() {
     const order = [];
@@ -35,4 +35,20 @@ class TakeCartCalc {
     
     return order;
   }
+
+
+  // removeOrderedItem メソッドを追加
+  removeOrderedItem(itemName) {
+    // 現在の orderedEachItemResult を取得
+    let orderItems = this.orderedItems;
+    
+    // 指定された名前のアイテムを削除
+    orderItems = orderItems.filter(orderItem => orderItem["品名"] !== itemName);
+    
+    // 新しい結果を保存（必要に応じて）
+    // 例えば、ローカルストレージや別のプロパティに保存する場合：
+    // this.updatedOrderedItems = orderItems;
+  }  
+
+
 }
