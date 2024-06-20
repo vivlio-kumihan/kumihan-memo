@@ -1,4 +1,4 @@
-class TakeCartCalc {
+class Calc {
   constructor(takeCartInstance) {
     this.cart = takeCartInstance.cart;
     this.orderedItems = this.orderedEachItemResult();

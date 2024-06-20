@@ -1,5 +1,6 @@
 const pl = new ProductLoader();
 pl.takeCartSpreadProduct().then(() => {
   const takeCartIns = new TakeCart();
-  new TakeCartCalc(takeCartIns);
+  const calcIns = new Calc(takeCartIns);
+  const orderIns = new Order(calcIns);
 });
