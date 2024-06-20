@@ -1,9 +1,12 @@
-class TakeCartCalc {
+class Calc {
   constructor(takeCartInstance) {
     this.cart = takeCartInstance.cart;
     this.orderedItems = this.orderedEachItemResult();
   }
 
+  getOrderedItems() {
+    return this.cart; // 最新のカートのアイテムを返す
+  }
 
   orderedEachItemResult() {
     const order = [];
@@ -49,6 +52,4 @@ class TakeCartCalc {
     // 例えば、ローカルストレージや別のプロパティに保存する場合：
     // this.updatedOrderedItems = orderItems;
   }  
-
-
 }
