@@ -1,8 +1,9 @@
 "use strict";
 
 class TakeCartOrder {
-  constructor(takeCartInstance) {
+  constructor(takeCartInstance, takeCartCalcInstance) {
     this.takeCartInstance = takeCartInstance;
+    this.takeCartCalc = takeCartCalcInstance;
     this.confirmOrderBtn = document.querySelector(".order__confirm");
     this.orderResultEl = document.querySelector(".order-result");
     this.backToCartBtn = document.querySelector(".order__back-to-cart");
@@ -13,7 +14,7 @@ class TakeCartOrder {
   _init() {
     this.confirmOrderBtn.addEventListener("click", () => {
       const getOrderlistEl = () => {
-        const orderItems = this.takeCartInstance.takeCartCalc.orderedEachItemResult();
+        const orderItems = this.takeCartCalc.orderedEachItemResult();
         console.log(orderItems);
         const liContent = orderItems.reduce((acc, obj) => {
           const orderQuantity = Object.keys(obj["内訳"]).reduce((acc, key) => {
