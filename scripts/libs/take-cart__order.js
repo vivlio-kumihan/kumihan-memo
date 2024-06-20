@@ -12,22 +12,31 @@ class Order {
 
 
   _init() {
+    // 既存のリストをクリア
     this.confirmOrderBtn.addEventListener("click", () => {
-      if (this.calcIns.cart.length !== 0) {
+      // 要素を初期化する。
+      this.orderResultEl.innerHTML = '';      
+      const tempDiv = document.createElement("div");
+      
+      // 注文内容の変更に随時対応する。
+      const orderItems = this.calcIns.getOrderedItems();
+      // リスト生成
+      if (orderItems.length !== 0) {
+        console.log(orderItems.length);
+        console.log(orderItems);
         // 注文をリストにして返す。
         const orderLiHTML = this.getOrderlistEl();
-      
-        // 既存のリストをクリア
-        this.orderResultEl.innerHTML = '';      
-      
         // 生成されたHTML文字列をDOM要素に変換
-        const tempDiv = document.createElement("div");
         tempDiv.innerHTML = orderLiHTML;
+        // 本文の要素へ埋め込んでいく
         Array.from(tempDiv.children).forEach(el => {
           this.orderResultEl.prepend(el);
         })
       } else {
-        console.log("nothing");
+        console.log(orderItems.length);
+        console.log(orderItems);
+        console.log(orderResultEl);
+
       }
     });
 

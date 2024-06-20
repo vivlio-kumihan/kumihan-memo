@@ -4,6 +4,9 @@ class Calc {
     this.orderedItems = this.orderedEachItemResult();
   }
 
+  getOrderedItems() {
+    return this.cart; // 最新のカートのアイテムを返す
+  }
 
   orderedEachItemResult() {
     const order = [];
@@ -49,6 +52,4 @@ class Calc {
     // 例えば、ローカルストレージや別のプロパティに保存する場合：
     // this.updatedOrderedItems = orderItems;
   }  
-
-
 }
