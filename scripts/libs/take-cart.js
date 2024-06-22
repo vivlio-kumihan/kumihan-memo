@@ -195,7 +195,7 @@ class TakeCart {
           types: typesArr,
           subTotal: "―",
           price: selectProductEl.querySelector(".product__price").textContent,
-          quantity: 1,
+          goodsReceived: 1,
           inCart: true
         };
     
