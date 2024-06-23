@@ -6,13 +6,10 @@ class TakeCart {
   constructor() {
     // 配列カートを初期化。
     this.cartOnLSIns = JSON.parse(localStorage.getItem("localStorageCart")) || [];
-
-    // カートのDOMを生成。
-    this.cartDOM = document.querySelector(".cart");
-
     // take-cart__calc.jsのCartResultCalcクラスを初期化。
     this.cartResultCalcIns = new CartResultCalc(this);
-
+    // カートのDOMを生成。
+    this.cartDOM = document.querySelector(".cart");
     // メインの関数。
     this._init();
   }
@@ -217,52 +214,6 @@ class TakeCart {
           this.handleCartItem(cartItemEl, localStrageCartItem, addToCartBtnEl);
         }
       });
-    });
-
-    // 注文を作る。
-    this.confirmOrderBtn = document.querySelector(".order__confirm");
-    this.orderedResultEl = document.querySelector(".ordered-result");
-    this.backToCartBtn = document.querySelector(".order__back-to-cart");
-    const getOrderedlistElFn = () => {
-      // orderedEachItemResultFn()から配列を取得する。
-      const orderedItems = this.cartResultCalcIns.orderedEachItemResultFn();
-      // reduce()を使用してリストアイテムのHTMLを生成する。
-      const liContent = orderedItems.reduce((acc, obj) => {
-        // 個数はオブジェクトなので、文字列に変換するため分けて処理する。
-        const orderQuantity = Object.keys(obj["内訳"]).reduce((acc, key) => {
-          const list = key !== "SELF"
-            ? `<span>${key}／${obj["内訳"][key]}個</span>`
-            : `<span>${obj["内訳"][key]}個</span>`;
-          return acc + list;
-        }, "");
-        // li要素の生成。
-        const itemLiContent = `
-          <li data-order-item-name=${obj["品名"]}>
-            <div class="name">品名 : ${obj["品名"]}</div>
-            <div class="quantity">数量 : ${orderQuantity}</div>
-            <div class="quantity">重量 : ${obj["重量小計"]}g</div>
-            <div class="sub-total">小計 : ${obj["小計"]}円</div>
-          </li>
-        `;
-        // accumulatorに現在のアイテムを追加して統合していく。
-        return acc + itemLiContent;
-      }, "");
-      return liContent;
-    }; 
-
-    this.confirmOrderBtn.addEventListener("click", () => {
-      // 既存のリストをクリア
-      this.orderedResultEl.innerHTML = '';      
-      // 生成されたHTML文字列をDOM要素に変換
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = getOrderedlistElFn();
-      Array.from(tempDiv.children).forEach(el => this.orderedResultEl.prepend(el))
-    });
-
-
-    // 戻るボタンのイベントリスナー。
-    this.backToCartBtn.addEventListener("click", () => {
-      this.orderedResultEl.innerHTML = '';
     });
 
 

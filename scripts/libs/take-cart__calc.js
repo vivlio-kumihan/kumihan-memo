@@ -10,7 +10,7 @@ class CartResultCalc {
 
 
   orderedEachItemResultFn() {
-    const order = [];
+    const order = this.cartOnLSIns && [];
     // cart内の各アイテムに対して処理を行う
     this.cartOnLSIns.forEach(itemObject => {
       // orderに同じ品名が含まれていないかをチェック
@@ -54,6 +54,4 @@ class CartResultCalc {
     // 例えば、ローカルストレージや別のプロパティに保存する場合：
     // this.updatedorderedEachItemResultIns = orderItems;
   }  
-
-
 }

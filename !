@@ -1,0 +1,12 @@
+fix order, create function
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# Date:      Sun Jun 23 12:08:54 2024 +0900
+#
+# On branch fixRemoveBTN
+# Changes to be committed:
+#	modified:   index.html
+#	modified:   scripts/libs/take-cart.js
+#
