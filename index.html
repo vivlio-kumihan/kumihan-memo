@@ -17,19 +17,50 @@
 
 <body>
   <main class="main-container">
-    <section class="section">
+    <section class="products-container">
       <h2 class="text-center">Products</h2>
       <ul id="products" class="products">
       </ul>
     </section>
-    <section class="section">
+    <section class="cart-container">
       <h2 class="text-center">Cart</h2>
       <div class="cart"></div>
       <button class="order__confirm">申し込む</button>
-      <div class="ordered">
-        <ul class="ordered-result"></ul>
-        <button class="order__back-to-cart">戻る</button>
-      </div>
+    </section>
+    <section class="order-container">
+      <ul class="ordered-result"></ul>
+      <form action="" class="order-form">
+        <div class="order-form__item-wrapper">
+          <label class="order-form__label" for="">名前</label>
+          <input class="order-form__input name" type="text" name="name" autocomplete="name" required>
+        </div>
+        <div class="order-form__item-wrapper">
+          <label class="order-form__label" for="">郵便番号</label>
+          <input class="order-form__input postal-code" name="postal-code" type="text" pattern="\d{3}-\d{4}" autocomplete="postal-code" required>
+        </div>
+        <div class="order-form__item-wrapper">
+          <label class="order-form__label" for="">都道府県</label>
+          <input class="order-form__input pref" type="text" required>
+        </div>
+        <div class="order-form__item-wrapper">
+          <label class="order-form__label" for="">住所</label>
+          <input class="order-form__input adress" type="text" required>
+        </div>
+        <div class="order-form__item-wrapper">
+          <label class="order-form__label" for="">Eメール</label>
+          <input class="order-form__input email" type="email" name="email" autocomplete="email" required>
+        </div>
+        <div class="order-form__item-wrapper">
+          <label class="order-form__label" for="">電話番号</label>
+          <input class="order-form__input tel" type="tel" name="tel" autocomplete="tel" placeholder="09000000000" required>
+        </div>
+        <div class="order-form__item-wrapper">
+          <label class="order-form__label" for="">備考</label>
+          <input class="order-form__input memo" type="text">
+        </div>
+        <button class="order-form__input submit" type="submit">申し込みをする</button>
+      </form>
+      <button class="order__back-to-cart">戻る</button>
     </section>
   </main>
 </body>

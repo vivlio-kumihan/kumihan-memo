@@ -6,6 +6,7 @@ class Order {
   constructor(takeCartIns, cartResultCalcIns) {
     this.takeCartIns = takeCartIns;
     this.cartResultCalcIns = cartResultCalcIns;
+    this.orderContainerEL = document.querySelector(".order-container");
     this.confirmOrderBtn = document.querySelector(".order__confirm");
     this.orderedResultEl = document.querySelector(".ordered-result");
     this.backToCartBtn = document.querySelector(".order__back-to-cart");
@@ -15,20 +16,21 @@ class Order {
 
 
   _init() {
-    // 既存のリストをクリア
+    // 『申し込む』ボタンをクリックしてイベントを発火。
     this.confirmOrderBtn.addEventListener("click", () => {
-      
       // 既存のリストをクリア
       this.orderedResultEl.innerHTML = '';      
       // 生成されたHTML文字列をDOM要素に変換
       const tempDiv = document.createElement("div");
       tempDiv.innerHTML = this.getOrderedlistElFn();
       Array.from(tempDiv.children).forEach(el => this.orderedResultEl.prepend(el))
+      this.orderContainerEL.classList.add("active");
     });
     
     // 戻るボタンのイベントリスナー。
     this.backToCartBtn.addEventListener("click", () => {
       this.orderedResultEl.innerHTML = '';
+      this.orderContainerEL.classList.remove("active");
     });
   }
 
