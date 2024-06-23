@@ -199,7 +199,6 @@ class TakeCart {
           subTotalPrice: "―",
           weight: selectProductEl.querySelector(".product__weight").textContent,
           subTotalWeight: "―",
-          quantity: 1,
           inCart: true
         };
     

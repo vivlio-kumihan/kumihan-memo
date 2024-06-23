@@ -26,11 +26,12 @@ class CartResultCalc {
 
         // 商品ごとの注文数を計算する。
         const subQuantity = Object.values(orderTypeQuantityObj).reduce((sum, quantity) => sum + quantity, 0);
-        console.log(itemObject);
-        const subtotal = parseFloat(itemObject.price) * subQuantity;
-        if (subtotal !== 0) {
-          order.push({ "品名": itemObject.name, "内訳": orderTypeQuantityObj, "小計": subtotal });
+        const subTotalPrice = parseFloat(itemObject.price) * subQuantity;
+        const subTotalWeight = parseFloat(itemObject.weight) * subQuantity;
+        if (subQuantity !== 0) {
+          order.push({ "品名": itemObject.name, "内訳": orderTypeQuantityObj, "重量小計": subTotalWeight, "小計": subTotalPrice });
         }
+        console.log(itemObject);
       }
     });
     
