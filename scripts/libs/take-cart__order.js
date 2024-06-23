@@ -3,7 +3,8 @@
 // 注文を管理するクラス
 
 class Order {
-  constructor(cartResultCalcIns) {
+  constructor(takeCartIns, cartResultCalcIns) {
+    this.takeCartIns = takeCartIns;
     this.cartResultCalcIns = cartResultCalcIns;
     this.confirmOrderBtn = document.querySelector(".order__confirm");
     this.orderedResultEl = document.querySelector(".ordered-result");
@@ -14,12 +15,16 @@ class Order {
 
   _init() {
     this.confirmOrderBtn.addEventListener("click", () => {
+      
       // 既存のリストをクリア
       this.orderedResultEl.innerHTML = '';      
       // 生成されたHTML文字列をDOM要素に変換
       const tempDiv = document.createElement("div");
       tempDiv.innerHTML = this.getOrderedlistElFn();
       Array.from(tempDiv.children).forEach(el => this.orderedResultEl.prepend(el))
+      console.log(this.getOrderedlistElFn());
+      console.log("from cart => ", this.takeCartIns.cartResultCalcIns.orderedEachItemResultIns);
+      console.log("ひとつ古いデータ", this.cartResultCalcIns.orderedEachItemResultIns);
     });
     
     // 戻るボタンのイベントリスナー。
@@ -30,7 +35,9 @@ class Order {
 
   getOrderedlistElFn() {
     // orderedEachItemResultFn()から配列を取得する。
-    const orderedItems = this.cartResultCalcIns.orderedEachItemResultFn();
+    // const orderedItems = this.cartResultCalcIns.orderedEachItemResultFn();
+    const orderedItems = this.takeCartIns.cartResultCalcIns.orderedEachItemResultIns;
+    console.log("orderedItems => ", orderedItems);
     // reduce()を使用してリストアイテムのHTMLを生成する。
     const liContent = orderedItems.reduce((acc, obj) => {
       // 個数はオブジェクトなので、文字列に変換するため分けて処理する。
