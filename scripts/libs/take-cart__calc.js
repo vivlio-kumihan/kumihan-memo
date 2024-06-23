@@ -1,6 +1,10 @@
+// カートの注文結果を返すクラス
+
+"use strict";
+
 class CartResultCalc {
   constructor(takeCartIns) {
-    this.cart = takeCartIns.cart;
+    this.cartOnLSProp = takeCartIns.cartOnLSProp;
     this.orderedItems = this.orderedEachItemResult();
   }
 
@@ -9,7 +13,7 @@ class CartResultCalc {
     const order = [];
 
     // cart内の各アイテムに対して処理を行う
-    this.cart.forEach(itemObject => {
+    this.cartOnLSProp.forEach(itemObject => {
       // orderに同じ品名が含まれていないかをチェック
       const isAlreadyInOrder = order.some(orderItem => orderItem["品名"] === itemObject.name);
 
@@ -31,9 +35,9 @@ class CartResultCalc {
         if (subQuantity !== 0) {
           order.push({ "品名": itemObject.name, "内訳": orderTypeQuantityObj, "重量小計": subTotalWeight, "小計": subTotalPrice });
         }
-        console.log(itemObject);
       }
     });
+    console.log("orderedEachItemResult", order);
     
     return order;
   }
@@ -46,6 +50,8 @@ class CartResultCalc {
     
     // 指定された名前のアイテムを削除
     orderItems = orderItems.filter(orderItem => orderItem["品名"] !== itemName);
+    console.log(orderItems);
+    // return orderItems;
     
     // 新しい結果を保存（必要に応じて）
     // 例えば、ローカルストレージや別のプロパティに保存する場合：

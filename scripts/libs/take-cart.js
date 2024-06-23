@@ -1,13 +1,11 @@
-/* 
-/*** カート機能を実装したクラスを定義。
-*/
+// カートのクラス
 
 "use strict";
 
 class TakeCart {
   constructor() {
     // 配列カートを初期化。
-    this.cart = JSON.parse(localStorage.getItem("localStorageCart")) || [];
+    this.cartOnLSProp = JSON.parse(localStorage.getItem("localStorageCart")) || [];
 
     // カートのDOMを生成。
     this.cartDOM = document.querySelector(".cart");
@@ -22,7 +20,7 @@ class TakeCart {
 
   // カートのデータの追加・変化をlocalStorageへ保存。
   saveCartToLocalStorage() {
-    localStorage.setItem("localStorageCart", JSON.stringify(this.cart));
+    localStorage.setItem("localStorageCart", JSON.stringify(this.cartOnLSProp));
     // カート保存時にCartResultCalcクラスもインスタンスを再作成。localStorageと同期させる心臓部。
     this.cartResultCalcIns = new CartResultCalc(this);
   }
@@ -65,7 +63,7 @@ class TakeCart {
   removeItemFn(cartItemDOM, localStrageCartItem, removedEl) {
     cartItemDOM.classList.add("cart__item-removed");
     setTimeout(() => cartItemDOM.remove(), 300);
-    this.cart = this.cart.filter(cartItem => cartItem.name !== localStrageCartItem.name);
+    this.cartOnLSProp = this.cartOnLSProp.filter(cartItem => cartItem.name !== localStrageCartItem.name);
     removedEl.textContent = "Add To Cart";
     removedEl.disabled = false;
     this.saveCartToLocalStorage();
@@ -100,7 +98,7 @@ class TakeCart {
 
     // 削除ボタンのイベント。
     removeBtn.addEventListener("click", () => {
-      this.cart.forEach(cartItem => {
+      this.cartOnLSProp.forEach(cartItem => {
         cartItem.name === localStrageCartItem.name
           && this.removeItemFn(cartItemDOM, localStrageCartItem, targetEl);
       });
@@ -156,7 +154,7 @@ class TakeCart {
   // product要素のボタンの状態を維持するための関数を定義。
   // また、リロード後は、こちらのhandleCartItem関数で状態変化を扱う。
   afterReloadeGenerateCartDOM() {
-    this.cart.forEach(localStrageCartItem => {
+    this.cartOnLSProp.forEach(localStrageCartItem => {
       const cartItemEl = this.createCartItemDOM(localStrageCartItem);
       const productAddToCartBtnEl = document.querySelector(`[data-productName="${localStrageCartItem.name}"]`);
       productAddToCartBtnEl
@@ -167,7 +165,7 @@ class TakeCart {
 
 
   _init() {
-    console.log(this.cart);
+    console.log(this.cartOnLSProp);
     // カート追加ボタン（複数）のインスタンスを待機。
     // 追加ボタンのクリックでアプリが発火する。
     this.addToCartBtns = document.querySelectorAll('[data-action="ADD_TO_CART"]');    
@@ -203,14 +201,14 @@ class TakeCart {
         };
     
         // カートに投入する商品と同じものがカートの中にあれば『真（true）』を返す。
-        const isInCart = this.cart.some(cartItem => cartItem.name === localStrageCartItem.name);
+        const isInCart = this.cartOnLSProp.some(cartItem => cartItem.name === localStrageCartItem.name);
         // カートに投入する商品と同じものがカートの中に『無い』ことを条件に、
         // `カートのDOM`に`商品のDOM`を差し込む。
         if (!isInCart) {
           // 選択した商品名の属性を持った独自のDOMを生成
           const cartItemEl = this.createCartItemDOM(localStrageCartItem);
           // カート配列に商品のオブジェクトを差し込む。
-          this.cart.push(localStrageCartItem);
+          this.cartOnLSProp.push(localStrageCartItem);
           // カートに追加ボタンの表示を変える。
           this.productAddBtnStateFn(addToCartBtnEl, "In Cart", true);
           // localStorageへ保存。
