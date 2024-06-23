@@ -1,6 +1,6 @@
-class TakeCartCalc {
-  constructor(takeCartInstance) {
-    this.cart = takeCartInstance.cart;
+class CartResultCalc {
+  constructor(takeCartIns) {
+    this.cart = takeCartIns.cart;
     this.orderedItems = this.orderedEachItemResult();
   }
 
@@ -26,6 +26,7 @@ class TakeCartCalc {
 
         // 商品ごとの注文数を計算する。
         const subQuantity = Object.values(orderTypeQuantityObj).reduce((sum, quantity) => sum + quantity, 0);
+        console.log(itemObject);
         const subtotal = parseFloat(itemObject.price) * subQuantity;
         if (subtotal !== 0) {
           order.push({ "品名": itemObject.name, "内訳": orderTypeQuantityObj, "小計": subtotal });

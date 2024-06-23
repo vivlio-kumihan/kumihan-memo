@@ -12,8 +12,8 @@ class TakeCart {
     // カートのDOMを生成。
     this.cartDOM = document.querySelector(".cart");
 
-    // take-cart__calc.jsのTakeCartCalcクラスを初期化。
-    this.takeCartCalc = new TakeCartCalc(this);
+    // take-cart__calc.jsのCartResultCalcクラスを初期化。
+    this.cartResultCalcIns = new CartResultCalc(this);
 
     // メインの関数。
     this._init();
@@ -23,8 +23,8 @@ class TakeCart {
   // カートのデータの追加・変化をlocalStorageへ保存。
   saveCartToLocalStorage() {
     localStorage.setItem("localStorageCart", JSON.stringify(this.cart));
-    // カート保存時にTakeCartCalcクラスもインスタンスを再作成。localStorageと同期させる心臓部。
-    this.takeCartCalc = new TakeCartCalc(this);
+    // カート保存時にCartResultCalcクラスもインスタンスを再作成。localStorageと同期させる心臓部。
+    this.cartResultCalcIns = new CartResultCalc(this);
   }
   
 
@@ -45,12 +45,13 @@ class TakeCart {
 
         // subtotalを計算してlocalStrageCartItemを更新
         const subQuantity = localStrageCartItem.types.reduce((sum, type) => sum + type.quantity, 0);
-        localStrageCartItem.subTotal = subQuantity > 0 ? localStrageCartItem.price * subQuantity : "―";
+        localStrageCartItem.subTotalPrice = subQuantity > 0 ? localStrageCartItem.price * subQuantity : "―";
+        localStrageCartItem.subTotalWeight = subQuantity > 0 ? localStrageCartItem.weight * subQuantity : localStrageCartItem.weight;
 
         // subtotalを表示するDOM要素を更新
         const namezSubTotal = document.querySelector(`[data-namez-sub-total="${localStrageCartItem.name}"]`);
         if (namezSubTotal) {
-          namezSubTotal.textContent = localStrageCartItem.subTotal > 0 ? localStrageCartItem.subTotal : "―";
+          namezSubTotal.textContent = localStrageCartItem.subTotalPrice > 0 ? localStrageCartItem.subTotalPrice : "―";
         }  
 
         // 変更をLocalStorageへ保存
@@ -68,8 +69,8 @@ class TakeCart {
     removedEl.textContent = "Add To Cart";
     removedEl.disabled = false;
     this.saveCartToLocalStorage();
-    // TakeCartCalc の orderedEachItemResult から該当アイテムを削除する
-    this.takeCartCalc.removeOrderedItem(localStrageCartItem.name);
+    // CartResultCalc の orderedEachItemResult から該当アイテムを削除する
+    this.cartResultCalcIns.removeOrderedItem(localStrageCartItem.name);
   }
 
 
@@ -141,7 +142,7 @@ class TakeCart {
         <img class="cart__item-image" src="${localStrageCartItem.image}" alt="${localStrageCartItem.name}"></img>
         <h3 class="cart__item-name">${localStrageCartItem.name}</h3>
         <h3 class="cart__item-price">${localStrageCartItem.price}</h3>
-        <h3 class="cart__item-sub-total" data-namez-sub-total="${localStrageCartItem.name}">${localStrageCartItem.subTotal}</h3>
+        <h3 class="cart__item-sub-total" data-namez-sub-total="${localStrageCartItem.name}">${localStrageCartItem.subTotalPrice}</h3>
         <ul class="cart__item-types">${typeLiElms}</ul>
         <button class="btn btn__danger btn__small" data-action="REMOVE_ITEM">&times;</button>
       </div>
@@ -166,6 +167,7 @@ class TakeCart {
 
 
   _init() {
+    console.log(this.cart);
     // カート追加ボタン（複数）のインスタンスを待機。
     // 追加ボタンのクリックでアプリが発火する。
     this.addToCartBtns = document.querySelectorAll('[data-action="ADD_TO_CART"]');    
@@ -193,8 +195,10 @@ class TakeCart {
           image: selectProductEl.querySelector(".product__image").src,
           name: selectProductEl.querySelector(".product__name").textContent,
           types: typesArr,
-          subTotal: "―",
           price: selectProductEl.querySelector(".product__price").textContent,
+          subTotalPrice: "―",
+          weight: selectProductEl.querySelector(".product__weight").textContent,
+          subTotalWeight: "―",
           quantity: 1,
           inCart: true
         };
@@ -227,7 +231,7 @@ class TakeCart {
     this.confirmOrderBtn.addEventListener("click", () => {
       const getOrderlistEl = () => {
         // orderedEachItemResult()から配列を取得する。
-        const orderItems = this.takeCartCalc.orderedEachItemResult();
+        const orderItems = this.cartResultCalcIns.orderedEachItemResult();
         console.log(orderItems);
         // reduce()を使用してリストアイテムのHTMLを生成する。
         const liContent = orderItems.reduce((acc, obj) => {

@@ -38,6 +38,7 @@ class ProductLoader {
         clone.querySelector('.product__name').textContent = product.name;
         clone.querySelector('.product__types').innerHTML = product.type.map(val => `<li class="product__type-item">${val}</li>`).join("");
         clone.querySelector('.product__price').textContent = product.price;
+        clone.querySelector('.product__weight').textContent = product.weight;
         clone.querySelector('button').setAttribute("data-productName", product.name);
         productList.appendChild(clone);
       });

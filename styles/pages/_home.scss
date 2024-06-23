@@ -161,6 +161,13 @@ button {
   filter: drop-shadow(0px 0px 0px transparent);
 }
 
+.product__weight {
+  // display: none;
+  &::after {
+    content: "g";
+  }
+}
+
 @media screen and (min-width: 600px) {
   .product__image {
     max-width: 100px;
