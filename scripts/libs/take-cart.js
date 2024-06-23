@@ -5,7 +5,7 @@
 class TakeCart {
   constructor() {
     // 配列カートを初期化。
-    this.cartOnLSProp = JSON.parse(localStorage.getItem("localStorageCart")) || [];
+    this.cartOnLSIns = JSON.parse(localStorage.getItem("localStorageCart")) || [];
 
     // カートのDOMを生成。
     this.cartDOM = document.querySelector(".cart");
@@ -20,7 +20,7 @@ class TakeCart {
 
   // カートのデータの追加・変化をlocalStorageへ保存。
   saveCartToLocalStorage() {
-    localStorage.setItem("localStorageCart", JSON.stringify(this.cartOnLSProp));
+    localStorage.setItem("localStorageCart", JSON.stringify(this.cartOnLSIns));
     // カート保存時にCartResultCalcクラスもインスタンスを再作成。localStorageと同期させる心臓部。
     this.cartResultCalcIns = new CartResultCalc(this);
   }
@@ -63,7 +63,7 @@ class TakeCart {
   removeItemFn(cartItemDOM, localStrageCartItem, removedEl) {
     cartItemDOM.classList.add("cart__item-removed");
     setTimeout(() => cartItemDOM.remove(), 300);
-    this.cartOnLSProp = this.cartOnLSProp.filter(cartItem => cartItem.name !== localStrageCartItem.name);
+    this.cartOnLSIns = this.cartOnLSIns.filter(cartItem => cartItem.name !== localStrageCartItem.name);
     removedEl.textContent = "Add To Cart";
     removedEl.disabled = false;
     this.saveCartToLocalStorage();
@@ -98,7 +98,7 @@ class TakeCart {
 
     // 削除ボタンのイベント。
     removeBtn.addEventListener("click", () => {
-      this.cartOnLSProp.forEach(cartItem => {
+      this.cartOnLSIns.forEach(cartItem => {
         cartItem.name === localStrageCartItem.name
           && this.removeItemFn(cartItemDOM, localStrageCartItem, targetEl);
       });
@@ -154,7 +154,7 @@ class TakeCart {
   // product要素のボタンの状態を維持するための関数を定義。
   // また、リロード後は、こちらのhandleCartItem関数で状態変化を扱う。
   afterReloadeGenerateCartDOM() {
-    this.cartOnLSProp.forEach(localStrageCartItem => {
+    this.cartOnLSIns.forEach(localStrageCartItem => {
       const cartItemEl = this.createCartItemDOM(localStrageCartItem);
       const productAddToCartBtnEl = document.querySelector(`[data-productName="${localStrageCartItem.name}"]`);
       productAddToCartBtnEl
@@ -165,7 +165,6 @@ class TakeCart {
 
 
   _init() {
-    console.log(this.cartOnLSProp);
     // カート追加ボタン（複数）のインスタンスを待機。
     // 追加ボタンのクリックでアプリが発火する。
     this.addToCartBtns = document.querySelectorAll('[data-action="ADD_TO_CART"]');    
@@ -201,14 +200,14 @@ class TakeCart {
         };
     
         // カートに投入する商品と同じものがカートの中にあれば『真（true）』を返す。
-        const isInCart = this.cartOnLSProp.some(cartItem => cartItem.name === localStrageCartItem.name);
+        const isInCart = this.cartOnLSIns.some(cartItem => cartItem.name === localStrageCartItem.name);
         // カートに投入する商品と同じものがカートの中に『無い』ことを条件に、
         // `カートのDOM`に`商品のDOM`を差し込む。
         if (!isInCart) {
           // 選択した商品名の属性を持った独自のDOMを生成
           const cartItemEl = this.createCartItemDOM(localStrageCartItem);
           // カート配列に商品のオブジェクトを差し込む。
-          this.cartOnLSProp.push(localStrageCartItem);
+          this.cartOnLSIns.push(localStrageCartItem);
           // カートに追加ボタンの表示を変える。
           this.productAddBtnStateFn(addToCartBtnEl, "In Cart", true);
           // localStorageへ保存。
@@ -227,9 +226,8 @@ class TakeCart {
 
     this.confirmOrderBtn.addEventListener("click", () => {
       const getOrderlistEl = () => {
-        // orderedEachItemResult()から配列を取得する。
-        const orderItems = this.cartResultCalcIns.orderedEachItemResult();
-        console.log(orderItems);
+        // orderedEachItemResultFn()から配列を取得する。
+        const orderItems = this.cartResultCalcIns.orderedEachItemResultFn();
         // reduce()を使用してリストアイテムのHTMLを生成する。
         const liContent = orderItems.reduce((acc, obj) => {
           // 個数はオブジェクトなので、文字列に変換するため分けて処理する。
@@ -244,6 +242,7 @@ class TakeCart {
             <li data-order-item-name=${obj["品名"]}>
               <div class="name">品名 : ${obj["品名"]}</div>
               <div class="quantity">数量 : ${orderQuantity}</div>
+              <div class="quantity">重量 : ${obj["重量小計"]}g</div>
               <div class="sub-total">小計 : ${obj["小計"]}円</div>
             </li>
           `;

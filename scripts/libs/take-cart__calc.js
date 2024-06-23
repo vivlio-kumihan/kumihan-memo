@@ -4,16 +4,15 @@
 
 class CartResultCalc {
   constructor(takeCartIns) {
-    this.cartOnLSProp = takeCartIns.cartOnLSProp;
-    this.orderedItems = this.orderedEachItemResult();
+    this.cartOnLSIns = takeCartIns.cartOnLSIns;
+    this.orderedEachItemResultIns = this.orderedEachItemResultFn();
   }
 
 
-  orderedEachItemResult() {
+  orderedEachItemResultFn() {
     const order = [];
-
     // cart内の各アイテムに対して処理を行う
-    this.cartOnLSProp.forEach(itemObject => {
+    this.cartOnLSIns.forEach(itemObject => {
       // orderに同じ品名が含まれていないかをチェック
       const isAlreadyInOrder = order.some(orderItem => orderItem["品名"] === itemObject.name);
 
@@ -37,7 +36,6 @@ class CartResultCalc {
         }
       }
     });
-    console.log("orderedEachItemResult", order);
     
     return order;
   }
@@ -45,17 +43,16 @@ class CartResultCalc {
 
   // removeOrderedItem メソッドを追加
   removeOrderedItem(itemName) {
-    // 現在の orderedEachItemResult を取得
-    let orderItems = this.orderedItems;
+    // 現在の orderedEachItemResultFn を取得
+    let orderItems = this.orderedEachItemResultIns;
     
     // 指定された名前のアイテムを削除
     orderItems = orderItems.filter(orderItem => orderItem["品名"] !== itemName);
-    console.log(orderItems);
     // return orderItems;
     
     // 新しい結果を保存（必要に応じて）
     // 例えば、ローカルストレージや別のプロパティに保存する場合：
-    // this.updatedOrderedItems = orderItems;
+    // this.updatedorderedEachItemResultIns = orderItems;
   }  
 
 
