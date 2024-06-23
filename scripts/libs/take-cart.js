@@ -1,30 +1,86 @@
-/* 
-/*** カート機能を実装したクラスを定義。
-*/
+// カートのクラス
 
 "use strict";
 
 class TakeCart {
   constructor() {
     // 配列カートを初期化。
-    this.cart = JSON.parse(localStorage.getItem("localStorageCart")) || [];
-
+    this.cartOnLSIns = JSON.parse(localStorage.getItem("localStorageCart")) || [];
+    // take-cart__calc.jsのCartResultCalcクラスを初期化。
+    this.cartResultCalcIns = new CartResultCalc(this);
     // カートのDOMを生成。
     this.cartDOM = document.querySelector(".cart");
-
-    // take-cart__calc.jsのCalcクラスを初期化。
-    this.calcIns = new Calc(this);
-
     // メインの関数。
     this._init();
   }
 
 
+  _init() {
+    // カート追加ボタン（複数）のインスタンスを待機。
+    // 追加ボタンのクリックでアプリが発火する。
+    this.addToCartBtns = document.querySelectorAll('[data-action="ADD_TO_CART"]');    
+    this.addToCartBtns.forEach((addToCartBtnEl) => {
+      // 追加ボタンをクリックするイベントを通して購入（予定）商品のインスタンスを発生させる。
+      // このアプリの諸元の発火元。  
+      addToCartBtnEl.addEventListener("click", () => {
+        // 選択した商品のDOMを生成。
+        const selectProductEl = addToCartBtnEl.parentElement;
+
+        // typeパラメーターに値を代入する。
+        const types = selectProductEl.querySelectorAll(".product__type-item");
+        let typesArr = [];
+        if (types.length !== 0) {
+          typesArr = Array.from(types).reduce((arr, dom) => {
+            arr.push({ name: dom.textContent, quantity: 0 });
+            return arr;
+          }, []);
+        } else {
+          typesArr = [{ name: "SELF", quantity: 0 }];
+        }        
+        
+        // 選択した商品各項目の値をオブジェクトに格納。
+        const localStrageCartItem = {
+          image: selectProductEl.querySelector(".product__image").src,
+          name: selectProductEl.querySelector(".product__name").textContent,
+          types: typesArr,
+          price: selectProductEl.querySelector(".product__price").textContent,
+          subTotalPrice: "―",
+          weight: selectProductEl.querySelector(".product__weight").textContent,
+          subTotalWeight: "―",
+          inCart: true
+        };
+    
+        // カートに投入する商品と同じものがカートの中にあれば『真（true）』を返す。
+        const isInCart = this.cartOnLSIns.some(cartItem => cartItem.name === localStrageCartItem.name);
+        // カートに投入する商品と同じものがカートの中に『無い』ことを条件に、
+        // `カートのDOM`に`商品のDOM`を差し込む。
+        if (!isInCart) {
+          // 選択した商品名の属性を持った独自のDOMを生成
+          const cartItemEl = this.createCartItemDOM(localStrageCartItem);
+          // カート配列に商品のオブジェクトを差し込む。
+          this.cartOnLSIns.push(localStrageCartItem);
+          // カートに追加ボタンの表示を変える。
+          this.productAddBtnStateFn(addToCartBtnEl, "In Cart", true);
+          // localStorageへ保存。
+          this.saveCartToLocalStorage();
+          // カートの中で独立した商品のインスタンスを確保し状態を変えられるように準備した関数を宣言する。
+          // 商品内のボタンをクリックする度にこの関数が呼ばれる。      
+          this.handleCartItem(cartItemEl, localStrageCartItem, addToCartBtnEl);
+        }
+      });
+    });
+
+
+    // ページ読み込み時にカートを復元。
+    this.afterReloadeGenerateCartDOM();
+  }  
+
+
   // カートのデータの追加・変化をlocalStorageへ保存。
   saveCartToLocalStorage() {
-    localStorage.setItem("localStorageCart", JSON.stringify(this.cart));
-    // カート保存時にCalcクラスもインスタンスを再作成。localStorageと同期させる心臓部。
-    this.calcIns = new Calc(this);
+    localStorage.setItem("localStorageCart", JSON.stringify(this.cartOnLSIns));
+    // カート保存時にCartResultCalcクラスもインスタンスを再作成。localStorageと同期させる心臓部。
+    this.cartResultCalcIns = new CartResultCalc(this);
   }
   
 
@@ -45,12 +101,13 @@ class TakeCart {
 
         // subtotalを計算してlocalStrageCartItemを更新
         const subQuantity = localStrageCartItem.types.reduce((sum, type) => sum + type.quantity, 0);
-        localStrageCartItem.subTotal = subQuantity > 0 ? localStrageCartItem.price * subQuantity : "―";
+        localStrageCartItem.subTotalPrice = subQuantity > 0 ? localStrageCartItem.price * subQuantity : "―";
+        localStrageCartItem.subTotalWeight = subQuantity > 0 ? localStrageCartItem.weight * subQuantity : localStrageCartItem.weight;
 
         // subtotalを表示するDOM要素を更新
         const namezSubTotal = document.querySelector(`[data-namez-sub-total="${localStrageCartItem.name}"]`);
         if (namezSubTotal) {
-          namezSubTotal.textContent = localStrageCartItem.subTotal > 0 ? localStrageCartItem.subTotal : "―";
+          namezSubTotal.textContent = localStrageCartItem.subTotalPrice > 0 ? localStrageCartItem.subTotalPrice : "―";
         }  
 
         // 変更をLocalStorageへ保存
@@ -64,12 +121,12 @@ class TakeCart {
   removeItemFn(cartItemDOM, localStrageCartItem, removedEl) {
     cartItemDOM.classList.add("cart__item-removed");
     setTimeout(() => cartItemDOM.remove(), 300);
-    this.cart = this.cart.filter(cartItem => cartItem.name !== localStrageCartItem.name);
+    this.cartOnLSIns = this.cartOnLSIns.filter(cartItem => cartItem.name !== localStrageCartItem.name);
     removedEl.textContent = "Add To Cart";
     removedEl.disabled = false;
     this.saveCartToLocalStorage();
-    // Calc の orderedEachItemResult から該当アイテムを削除する
-    this.calcIns.removeOrderedItem(localStrageCartItem.name);
+    // CartResultCalc の orderedEachItemResult から該当アイテムを削除する
+    this.cartResultCalcIns.removeOrderedItem(localStrageCartItem.name);
   }
 
 
@@ -99,7 +156,7 @@ class TakeCart {
 
     // 削除ボタンのイベント。
     removeBtn.addEventListener("click", () => {
-      this.cart.forEach(cartItem => {
+      this.cartOnLSIns.forEach(cartItem => {
         cartItem.name === localStrageCartItem.name
           && this.removeItemFn(cartItemDOM, localStrageCartItem, targetEl);
       });
@@ -141,7 +198,7 @@ class TakeCart {
         <img class="cart__item-image" src="${localStrageCartItem.image}" alt="${localStrageCartItem.name}"></img>
         <h3 class="cart__item-name">${localStrageCartItem.name}</h3>
         <h3 class="cart__item-price">${localStrageCartItem.price}</h3>
-        <h3 class="cart__item-sub-total" data-namez-sub-total="${localStrageCartItem.name}">${localStrageCartItem.subTotal}</h3>
+        <h3 class="cart__item-sub-total" data-namez-sub-total="${localStrageCartItem.name}">${localStrageCartItem.subTotalPrice}</h3>
         <ul class="cart__item-types">${typeLiElms}</ul>
         <button class="btn btn__danger btn__small" data-action="REMOVE_ITEM">&times;</button>
       </div>
@@ -155,71 +212,12 @@ class TakeCart {
   // product要素のボタンの状態を維持するための関数を定義。
   // また、リロード後は、こちらのhandleCartItem関数で状態変化を扱う。
   afterReloadeGenerateCartDOM() {
-    this.cart.forEach(localStrageCartItem => {
+    this.cartOnLSIns.forEach(localStrageCartItem => {
       const cartItemEl = this.createCartItemDOM(localStrageCartItem);
       const productAddToCartBtnEl = document.querySelector(`[data-productName="${localStrageCartItem.name}"]`);
       productAddToCartBtnEl
         && this.productAddBtnStateFn(productAddToCartBtnEl, "In Cart", true);
       this.handleCartItem(cartItemEl, localStrageCartItem, productAddToCartBtnEl);
     });
-  }
-
-
-  _init() {
-    // カート追加ボタン（複数）のインスタンスを待機。
-    // 追加ボタンのクリックでアプリが発火する。
-    this.addToCartBtns = document.querySelectorAll('[data-action="ADD_TO_CART"]');    
-    this.addToCartBtns.forEach((addToCartBtnEl) => {
-      // 追加ボタンをクリックするイベントを通して購入（予定）商品のインスタンスを発生させる。
-      // このアプリの諸元の発火元。  
-      addToCartBtnEl.addEventListener("click", () => {
-        // 選択した商品のDOMを生成。
-        const selectProductEl = addToCartBtnEl.parentElement;
-
-        // typeパラメーターに値を代入する。
-        const types = selectProductEl.querySelectorAll(".product__type-item");
-        let typesArr = [];
-        if (types.length !== 0) {
-          typesArr = Array.from(types).reduce((arr, dom) => {
-            arr.push({ name: dom.textContent, quantity: 0 });
-            return arr;
-          }, []);
-        } else {
-          typesArr = [{ name: "SELF", quantity: 0 }];
-        }        
-        
-        // 選択した商品各項目の値をオブジェクトに格納。
-        const localStrageCartItem = {
-          image: selectProductEl.querySelector(".product__image").src,
-          name: selectProductEl.querySelector(".product__name").textContent,
-          types: typesArr,
-          subTotal: "―",
-          price: selectProductEl.querySelector(".product__price").textContent,
-          goodsReceived: 1,
-          inCart: true
-        };
-    
-        // カートに投入する商品と同じものがカートの中にあれば『真（true）』を返す。
-        const isInCart = this.cart.some(cartItem => cartItem.name === localStrageCartItem.name);
-        // カートに投入する商品と同じものがカートの中に『無い』ことを条件に、
-        // `カートのDOM`に`商品のDOM`を差し込む。
-        if (!isInCart) {
-          // 選択した商品名の属性を持った独自のDOMを生成
-          const cartItemEl = this.createCartItemDOM(localStrageCartItem);
-          // カート配列に商品のオブジェクトを差し込む。
-          this.cart.push(localStrageCartItem);
-          // カートに追加ボタンの表示を変える。
-          this.productAddBtnStateFn(addToCartBtnEl, "In Cart", true);
-          // localStorageへ保存。
-          this.saveCartToLocalStorage();
-          // カートの中で独立した商品のインスタンスを確保し状態を変えられるように準備した関数を宣言する。
-          // 商品内のボタンをクリックする度にこの関数が呼ばれる。      
-          this.handleCartItem(cartItemEl, localStrageCartItem, addToCartBtnEl);
-        }
-      });
-    });
-
-    // ページ読み込み時にカートを復元。
-    this.afterReloadeGenerateCartDOM();
   }
 }
