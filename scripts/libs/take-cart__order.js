@@ -3,14 +3,18 @@
 // 注文を管理するクラス
 
 class Order {
-  constructor(takeCartIns, cartResultCalcIns) {
+  constructor(takeCartIns, cartResultCalcIns, sendFeeIns) {
     this.takeCartIns = takeCartIns;
     this.cartResultCalcIns = cartResultCalcIns;
+    this.sendFeeIns = sendFeeIns;
     this.orderContainerEL = document.querySelector(".order-container");
     this.confirmOrderBtn = document.querySelector(".order__confirm");
-    this.orderedResultEl = document.querySelector(".ordered-result");
+    this.orderedResultSubTotalEl = document.querySelector(".ordered-result__sub-total");
+    this.orderedResultTotalEl = document.querySelector(".ordered-result__total");
     this.backToCartBtn = document.querySelector(".order__back-to-cart");
     this.getOrderedlistElFn();
+    this.getTotalFeeElFn();
+    this.orderedItems = this.takeCartIns.cartResultCalcIns.orderedEachItemResultMth || [];    
     this._init();
   }
 
@@ -18,20 +22,37 @@ class Order {
   _init() {
     // 『申し込む』ボタンをクリックしてイベントを発火。
     this.confirmOrderBtn.addEventListener("click", () => {
+      // Sub Total
       // 既存のリストをクリア
-      this.orderedResultEl.innerHTML = '';      
+      this.orderedResultSubTotalEl.innerHTML = '';      
       // 生成されたHTML文字列をDOM要素に変換
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = this.getOrderedlistElFn();
-      Array.from(tempDiv.children).forEach(el => this.orderedResultEl.prepend(el))
+      const tempDiv1 = document.createElement("div");
+      tempDiv1.innerHTML = this.getOrderedlistElFn();
+      Array.from(tempDiv1.children).forEach(el => this.orderedResultSubTotalEl.prepend(el))
+      
+      // Total
+      // 既存のリストをクリア
+      this.orderedResultTotalEl.innerHTML = '';      
+      // 生成されたHTML文字列をDOM要素に変換
+      const tempDiv2 = document.createElement("div");
+      tempDiv2.innerHTML = this.getTotalFeeElFn();
+      Array.from(tempDiv2.children).forEach(el => this.orderedResultTotalEl.prepend(el))
       this.orderContainerEL.classList.add("active");
     });
     
     // 戻るボタンのイベントリスナー。
     this.backToCartBtn.addEventListener("click", () => {
-      this.orderedResultEl.innerHTML = '';
+      this.orderedResultSubTotalEl.innerHTML = '';
       this.orderContainerEL.classList.remove("active");
     });
+  }
+
+  _totalCalc() {
+    const orderedItems = this.takeCartIns.cartResultCalcIns.orderedEachItemResultMth;
+    const totalWeight = orderedItems.reduce((acc, item) => { return acc + item["重量小計"] }, 0);
+    const totalAmount = orderedItems.reduce((acc, item) => { return acc + item["小計"] }, 0);
+    const result = {totalWeight: totalWeight, totalAmount: totalAmount};
+    return result;
   }
 
   
@@ -52,7 +73,6 @@ class Order {
         <li data-order-item-name=${obj["品名"]}>
           <div class="name">品名 : ${obj["品名"]}</div>
           <div class="quantity">数量 : ${orderQuantity}</div>
-          <div class="quantity">重量 : ${obj["重量小計"]}g</div>
           <div class="sub-total">小計 : ${obj["小計"]}円</div>
         </li>
       `;
@@ -61,4 +81,20 @@ class Order {
     }, "");
     return liContent;
   };
+
+  getTotalFeeElFn() {
+    const weight = this._totalCalc().totalWeight;   
+    const itemAmount = this._totalCalc().totalAmount;   
+    const fee = this.sendFeeIns.feeCalcMth();
+    const totalAmount = itemAmount + fee;
+    const liContent = `
+      <li>
+      <div class="weight">総重量 : ${weight}g</div>
+      <div class="itemAmount">授与品合計 : ${itemAmount}円</div>
+        <div class="fee">送料 : ${fee}円</div>
+        <div class="fee">合計 : ${totalAmount}円</div>
+      </li>
+    `;    
+    return liContent;
+  }
 }

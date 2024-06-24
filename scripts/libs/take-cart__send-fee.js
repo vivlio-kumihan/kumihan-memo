@@ -1,7 +1,7 @@
 "use strict";
 
 class SendFee {
-  constructor(orderIns) {
+  constructor(takeCartIns) {
     // 方面
     this.AREA = {
       "---": ["---"],
@@ -34,32 +34,29 @@ class SendFee {
       "沖縄": { 50: 230, 100: 250, 150: 320, 200: 480, 201: 1740 },
     };
 
-    this.orderIns = orderIns;
-
+    this.takeCartIns = takeCartIns;
     this._init();
   }
 
   _init() {
-    console.log(this.sendFeeCalc());
-    // console.log(this.orderIns);
-    console.log(this.orderIns.cartResultCalcIns);
+    this.feeCalcMth();
   }
-
-  sendFeeCalc() {
-    // 方面別送料
-    // フォームで選択された都道府県のpropsが入る。とりあえず今は大阪府を入れている。
+  
+  feeCalcMth() {
+    const orderedItems = this.takeCartIns.cartResultCalcIns.orderedEachItemResultMth;
+    // 方面
     const prefSelected = "大阪府";
     const direction = Object.keys(this.AREA).find(key => this.AREA[key].includes(prefSelected));
-    console.log(direction);
-
-    const totalWeight = 101;
-    console.log(totalWeight);
-
-    let sendFee = 0;
-
+    // console.log("方面=>", direction);
+    // 総重量
+    const totalWeight = Object.values(orderedItems).reduce((acc, obj) => {
+      return acc + obj["重量小計"];
+    }, 0);
+    // console.log("総重量=>", totalWeight);
     // 送料の計算
     // FEE[方面][重量];
     // 条件分岐で回さないとエラーになる。
+    let sendFee = 0;
     switch (true) {
       case totalWeight < 51:
         sendFee = direction && this.FEE[direction][50];
@@ -80,35 +77,3 @@ class SendFee {
     return sendFee;
   }
 }
-  
-  
-
-  
-  //   useEffect(() => {
-  //     setTotalSendFee(sendFee);
-  //   });
-  
-  //   return (
-  //     <>
-  //       <div className="location-selector">
-  //         {
-  //           sendFee
-  //             ? <div className="send-FEE">郵送料<span className="send-FEE-note">（口座徴収通知料を含む）</span><span>{sendFee}</span>円</div>
-  //             : <div className="send-FEE">郵送料<span className="send-FEE-note">（口座徴収通知料を含む）</span><span>0</span>円</div>
-  //         }
-  //       </div>
-  //     </>
-  //   );
-  // };
-
-
-
-// 送料の例外的な処理
-// let sendFee = 0;
-// const isSyuinChou = () => {
-//   const syuinChouItem = cartItems.find(item => item.pid === "syuin_chou");
-//   if (syuinChouItem && cartItems.length === 1) {
-//     return Object.keys(syuinChouItem.types).reduce((acc, key) => acc + parseInt(syuinChouItem.types[key]), 0) === 1;
-//   }
-//   return false; // カートに「御朱印帳」が見つからない場合は false を返す
-// };
