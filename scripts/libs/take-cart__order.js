@@ -37,8 +37,7 @@ class Order {
   
   getOrderedlistElFn() {
     // orderedEachItemResultFn()から配列を取得する。
-    // const orderedItems = this.cartResultCalcIns.orderedEachItemResultFn();
-    const orderedItems = this.takeCartIns.cartResultCalcIns.orderedEachItemResultIns;
+    const orderedItems = this.takeCartIns.cartResultCalcIns.orderedEachItemResultMth;
     // reduce()を使用してリストアイテムのHTMLを生成する。
     const liContent = orderedItems.reduce((acc, obj) => {
       // 個数はオブジェクトなので、文字列に変換するため分けて処理する。

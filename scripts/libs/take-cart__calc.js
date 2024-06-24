@@ -5,7 +5,7 @@
 class CartResultCalc {
   constructor(takeCartIns) {
     this.cartOnLSIns = takeCartIns.cartOnLSIns;
-    this.orderedEachItemResultIns = this.orderedEachItemResultFn();
+    this.orderedEachItemResultMth = this.orderedEachItemResultFn();
   }
 
 
@@ -48,7 +48,7 @@ class CartResultCalc {
   // removeOrderedItem メソッドを追加
   removeOrderedItem(itemName) {
     // 現在の orderedEachItemResultFn を取得
-    let orderItems = this.orderedEachItemResultIns;
+    let orderItems = this.orderedEachItemResultMth;
     
     // 指定された名前のアイテムを削除
     orderItems = orderItems.filter(orderItem => orderItem["品名"] !== itemName);
