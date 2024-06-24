@@ -98,22 +98,3 @@ class Order {
     return liContent;
   }
 }
-
-// <div class="quantity">重量 : ${obj["重量小計"]}g</div>
-// orderedEachItemResultFn()から配列を取得する。
-// const orderedItems = this.takeCartIns.cartResultCalcIns.orderedEachItemResultMth;
-
-// // reduce()を使用してリストアイテムのHTMLを生成する。
-// const liContent = orderedItems.reduce((acc, obj) => {
-//   // 個数はオブジェクトなので、文字列に変換するため分けて処理する。
-//   const orderQuantity = Object.keys(obj["内訳"]).reduce((acc, key) => {
-//     const list = key !== "SELF"
-//       ? `<span>${key}／${obj["内訳"][key]}個</span>`
-//       : `<span>${obj["内訳"][key]}個</span>`;
-//     return acc + list;
-//   }, "");
-//   // li要素の生成。
-
-//   // accumulatorに現在のアイテムを追加して統合していく。
-//   return acc + itemLiContent;
-// }, "");
