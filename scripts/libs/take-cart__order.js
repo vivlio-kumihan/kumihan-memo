@@ -1,7 +1,6 @@
 "use strict";
 
 // 注文を管理するクラス
-
 class Order {
   constructor(takeCartIns, cartResultCalcIns, sendFeeIns) {
     this.takeCartIns = takeCartIns;
@@ -15,6 +14,8 @@ class Order {
     this.orderedItems = this.takeCartIns.cartResultCalcIns.orderedEachItemResultMth || [];    
     this.formData = this._getFormDataFromLS();
     this.inputEls = document.querySelectorAll(".order-form__input");
+    this.formData = this._getFormDataFromLS();
+    this.inputEls = document.querySelectorAll(".order-form__input");
     this._init();
   }
 
@@ -22,6 +23,7 @@ class Order {
   _init() {
     // 都道府県が取れた。
     // console.log(this.sendFeeIns.PREFECTURE);
+    console.log(this.sendFeeIns.PREFECTURE);
     
     // 『申し込む』ボタンをクリックしてイベントを発火。
     this.confirmOrderBtn.addEventListener("click", () => {
@@ -30,7 +32,7 @@ class Order {
       this.orderedResultSubTotalEl.innerHTML = '';      
       // 生成されたHTML文字列をDOM要素に変換
       const tempDiv1 = document.createElement("div");
-      tempDiv1.innerHTML = this.getOrderedlistElFn();
+      tempDiv1.innerHTML = this._getOrderedlistElFn();
       Array.from(tempDiv1.children).forEach(el => this.orderedResultSubTotalEl.prepend(el))
       
       // Total
@@ -63,7 +65,7 @@ class Order {
   }
 
   
-  getOrderedlistElFn() {
+  _getOrderedlistElFn() {
     // orderedEachItemResultFn()から配列を取得する。
     const orderedItems = this.takeCartIns.cartResultCalcIns.orderedEachItemResultMth;
     // reduce()を使用してリストアイテムのHTMLを生成する。
@@ -122,13 +124,13 @@ class Order {
   //   return liContent;
   // }
 
+  
+  // フォーム用
   _initializeForm() {
     this.inputEls.forEach(el => {
-      console.log(el.name);
       el.value = this.formData[el.name] ? this.formData[el.name] : "";
     });
   }
-
   _handleFormInput() {
     this.inputEls.forEach(el => {
       el.addEventListener("input", () => {
@@ -137,7 +139,6 @@ class Order {
       });
     });
   }
-
   _getFormDataFromLS() {
   let formData = {};
     try {
@@ -148,67 +149,7 @@ class Order {
     }
     return formData;
   }
-
   _saveFormDataToLS() {
     localStorage.setItem("localStorageForm", JSON.stringify(this.formData));
   }  
 }
-
-
-
-
-
-
-
-
-
-
-// _inputItems() {
-//   const inputEls = document.querySelectorAll(".order-form__input");
-//   const formData = Array.from(inputEls).reduce((acc, el) => {
-//     el.addEventListener("input", () => {
-//       acc[el.name] = el.value;
-//     });
-//     return acc;
-//   }, {})
-//   return formData;
-// }
-
-// console.log(inputEls);
-// return acc.inputEl.name = inputEl.value;
-
-// inputEls.forEach(input => {
-//   input.addEventListener('input', () => {
-//     // const inputValue = document.getElementById('inputValue');
-
-//     console.log(input.name);
-//     console.log(input.value);
-//     // inputValue.innerHTML = input.value;
-//   });    
-// });
-
-// const input = document.getElementById('input');
-// inputEls.reduce((acc, el) => {
-//   el.name
-//   return acc 
-// });
-// const name = document.querySelector(".order-form__input.name");
-// const postalCode = document.querySelector(".order-form__input.postal-code");
-// const pref = document.querySelector(".order-form__input.pref");
-// const adress = document.querySelector(".order-form__input.adress");
-// const email = document.querySelector(".order-form__input.email");
-// const tel = document.querySelector(".order-form__input.tel");
-// const memo = document.querySelector(".order-form__input.memo");
-
-// console.log(name);
-// console.log(name.value);
-// console.log(postalCode.value);
-// console.log(pref.value);
-// console.log(adress.value);
-// console.log(email.value);
-// console.log(tel.value);
-// console.log(memo.value);
-
-
-// let formData = this._inputItems()
-// console.log(this.formData);
