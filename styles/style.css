@@ -1,3 +1,4 @@
+@charset "UTF-8";
 :root {
   font-size: 12px;
 }
@@ -139,8 +140,8 @@ button {
   border-style: solid;
 }
 
-.product__price:before {
-  content: "$";
+.product__price:after {
+  content: "円";
 }
 
 .product__image {
@@ -231,8 +232,8 @@ button {
     max-width: 38.5px;
   }
 }
-.cart__item-price:before {
-  content: "$";
+.cart__item-price:after {
+  content: "円";
 }
 
 .cart-footer {
@@ -295,4 +296,11 @@ button {
 .order-form__input {
   flex-basis: 60%;
   border: 1px solid #ddd;
+}
+
+.ordered-result {
+  margin-bottom: 20px;
+}
+.ordered-result__total {
+  margin-top: 10px;
 }/*# sourceMappingURL=style.css.map */

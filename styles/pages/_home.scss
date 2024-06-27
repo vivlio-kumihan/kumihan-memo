@@ -151,8 +151,8 @@ button {
   border-style: solid;
 }
 
-.product__price:before {
-  content: '$';
+.product__price:after {
+  content: '円';
 }
 
 .product__image {
@@ -256,8 +256,8 @@ button {
   }
 }
 
-.cart__item-price:before {
-  content: '$';
+.cart__item-price:after {
+  content: '円';
 }
 
 .cart-footer {
@@ -309,7 +309,6 @@ button {
 }
 
 .order-form {
-  
   &__item-wrapper {
     display: flex;
     column-gap: 1em;
@@ -324,5 +323,16 @@ button {
     flex-basis: 60%;
     border: 1px solid #ddd;
   
+  }
+}
+
+.ordered-result {
+  margin-bottom: 20px;
+  &__sub-total {
+    // color: red;
+
+  }
+  &__total {
+    margin-top: 10px;
   }
 }

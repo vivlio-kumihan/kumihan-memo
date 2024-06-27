@@ -1,8 +1,8 @@
 [
-  { "url": "./images/products/beer.svg", "name": "Beer", "type": ["赤", "青", "緑"], "price": "600", "weight": "10" },
+  { "url": "./images/products/beer.svg", "name": "Beer", "type": ["Red", "Black", "Green"], "price": "600", "weight": "10" },
   { "url": "./images/products/energy-drink.svg", "name": "Energy Drink", "type": [], "price": "500", "weight": "10" },
-  { "url": "./images/products/juice.svg", "name": "Juice", "type": [], "price": "400", "weight": "10" },
-  { "url": "./images/products/milk.svg", "name": "Milk", "type": ["おかめ", "おふく", "おたふく"], "price": "250", "weight": "10" },
-  { "url": "./images/products/mineral-water.svg", "name": "Mineral Water", "type": ["紫", "藍", "朱"], "price": "1000", "weight": "10" },
-  { "url": "./images/products/smoothie.svg", "name": "Smoothie", "type": ["観音像", "菩薩像"], "price": "2000", "weight": "10" }
+  { "url": "./images/products/juice.svg", "name": "Juice", "type": ["Orange", "Grape", "Apple"], "price": "400", "weight": "10" },
+  { "url": "./images/products/milk.svg", "name": "Milk", "type": [], "price": "250", "weight": "10" },
+  { "url": "./images/products/mineral-water.svg", "name": "Mineral Water", "type": ["Rokko", "Shimanto"], "price": "1000", "weight": "10" },
+  { "url": "./images/products/smoothie.svg", "name": "Smoothie", "type": ["Banana", "Strawberry"], "price": "2000", "weight": "10" }
 ]
